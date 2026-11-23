@@ -1,0 +1,179 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import organigrama from '../data/organigrama.json';
+import tesoreria from '../data/tesoreria.json';
+import type { LibroTesoreria } from '../lib/tesoreria-metrics';
+import { calcularResumen, formatearMoneda } from '../lib/tesoreria-metrics';
+import { REPO_URL, withBase } from '../lib/url';
+
+const documentos = await getCollection('documentos');
+const actas = await getCollection('actas');
+const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
+---
+
+<BaseLayout
+  title="Inicio"
+  description="Portal oficial de transparencia, doctrina, estructura en tres poderes y cinco niveles del Partido Plus Ultra (Perú)."
+>
+  <!-- Hero Institucional -->
+  <section class="bg-navy-900 text-white border-b-4 border-gold-400">
+    <div class="max-w-7xl mx-auto px-4 py-14 sm:py-20 grid gap-10 lg:grid-cols-12 items-center">
+      <div class="lg:col-span-7 space-y-5">
+        <p class="inline-block rounded-full bg-navy-800 border border-gold-400/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-gold-300">
+          Infraestructura Pública · Perú · Costo Operativo S/ 0.00
+        </p>
+        <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-white">
+          Partido Plus Ultra: Transparencia Total, Orden y Valores
+        </h1>
+        <p class="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl">
+          {organigrama.partido.identidad.resumen}
+        </p>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a
+            href={withBase('/transparencia/')}
+            class="btn inline-flex items-center justify-center rounded-lg bg-gold-400 text-navy-950 font-extrabold px-5 py-3 text-sm sm:text-base hover:bg-gold-300"
+          >
+            Auditar Transparencia y Cuentas
+          </a>
+          <a
+            href={withBase('/estructura/')}
+            class="btn inline-flex items-center justify-center rounded-lg bg-navy-800 text-white border border-gold-400 font-bold px-5 py-3 text-sm sm:text-base hover:bg-navy-700"
+          >
+            Conocer los 3 Poderes y 5 Niveles
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5">
+        <figure class="rounded-xl overflow-hidden border-2 border-gold-400 bg-navy-950 shadow-xl">
+          <img
+            src={withBase('/img/infografia-estructura-partido.jpg')}
+            alt="Infografía de la estructura del Partido Plus Ultra organizada en tres poderes y cinco niveles."
+            class="w-full h-auto block"
+            width="1200"
+            height="675"
+          />
+          <figcaption class="px-4 py-2.5 text-xs text-slate-300 bg-navy-950 border-t border-navy-800">
+            Modelo orgánico: ascenso por mérito y Escuela Política; supervisión doctrinal descendente.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Métricas Reales de Transparencia -->
+  <section class="max-w-7xl mx-auto px-4 py-12" aria-labelledby="metricas-heading">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+      <div>
+        <h2 id="metricas-heading" class="text-2xl font-extrabold text-navy-900">
+          Tablero Público en Vivo (Git-as-a-Ledger)
+        </h2>
+        <p class="text-sm text-ink-muted">
+          Datos calculados directamente desde los archivos públicos auditables del repositorio.
+        </p>
+      </div>
+      <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-navy-800 underline underline-offset-4 hover:text-navy-700">
+        Ver historial de commits en GitHub
+      </a>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-xl border border-border bg-surface-muted p-5">
+        <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Saldo de Tesorería</p>
+        <p class="mt-2 text-3xl font-extrabold text-navy-900">
+          {formatearMoneda(resumenTesoreria.saldoNetoCentimos, tesoreria.simbolo)}
+        </p>
+        <p class="mt-1 text-xs text-ink-muted">{resumenTesoreria.cantidadMovimientos} movimientos registrados</p>
+      </div>
+
+      <div class="rounded-xl border border-border bg-surface-muted p-5">
+        <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Documentos Oficiales</p>
+        <p class="mt-2 text-3xl font-extrabold text-navy-900">{documentos.length}</p>
+        <p class="mt-1 text-xs text-ink-muted">Disponibles en Biblioteca Doctrinal</p>
+      </div>
+
+      <div class="rounded-xl border border-border bg-surface-muted p-5">
+        <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Actas Publicadas</p>
+        <p class="mt-2 text-3xl font-extrabold text-navy-900">{actas.length}</p>
+        <p class="mt-1 text-xs text-ink-muted">Registro abierto de acuerdos</p>
+      </div>
+
+      <div class="rounded-xl border border-border bg-surface-muted p-5">
+        <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Escuela Política Mínima</p>
+        <p class="mt-2 text-3xl font-extrabold text-navy-900">{organigrama.escuelaPolitica.duracionMinimaMeses} meses</p>
+        <p class="mt-1 text-xs text-ink-muted">Obligatoria para ascender a Nivel 3</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Los Tres Poderes -->
+  <section class="bg-surface-muted border-y border-border py-12" aria-labelledby="poderes-resumen-heading">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 id="poderes-resumen-heading" class="text-2xl font-extrabold text-navy-900">
+        Separación de Poderes sin Concentración
+      </h2>
+      <p class="mt-2 text-sm sm:text-base text-ink-muted max-w-3xl">
+        Ningún líder concentra el poder moral, las reglas ni las candidaturas. Quienes custodian la doctrina y los fondos tienen prohibido postular a cargos públicos.
+      </p>
+
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {organigrama.poderes.map((poder) => (
+          <article class="rounded-xl bg-white border border-border p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Poder {poder.orden}</p>
+              <h3 class="mt-1 text-xl font-extrabold text-navy-900">{poder.nombre}</h3>
+              <p class="text-sm font-semibold text-navy-700">{poder.subtitulo}</p>
+              <p class="mt-3 text-sm text-ink leading-relaxed">{poder.funcion}</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-border text-xs font-bold">
+              {poder.puedePostular ? (
+                <span class="text-emerald-800">Única cantera autorizada para elecciones</span>
+              ) : (
+                <span class="text-rose-800">Prohibido postular a cargos públicos y tener empresas</span>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Rutas de Participación -->
+  <section class="max-w-7xl mx-auto px-4 py-12" aria-labelledby="participacion-heading">
+    <h2 id="participacion-heading" class="text-2xl font-extrabold text-navy-900">
+      ¿Cómo participar o auditar el partido?
+    </h2>
+    <div class="mt-6 grid gap-6 md:grid-cols-3">
+      <article class="rounded-xl border border-border p-6 bg-white">
+        <h3 class="text-lg font-extrabold text-navy-900">1. Lee la Doctrina y Estructura</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Descarga la guía oficial y consulta cada regla de rotación, contrapesos y prohibiciones.
+        </p>
+        <a href={withBase('/biblioteca/')} class="mt-4 inline-block text-sm font-bold text-navy-900 underline underline-offset-4">
+          Ir a la Biblioteca Doctrinal →
+        </a>
+      </article>
+
+      <article class="rounded-xl border border-border p-6 bg-white">
+        <h3 class="text-lg font-extrabold text-navy-900">2. Militancia Nivel 4 y Verificador</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Conoce el pacto de militancia operativa anónima con carnet digital y prueba el verificador criptográfico Ed25519.
+        </p>
+        <a href={withBase('/militancia/')} class="mt-4 inline-block text-sm font-bold text-navy-900 underline underline-offset-4">
+          Ver Militancia y Carnets →
+        </a>
+      </article>
+
+      <article class="rounded-xl border border-border p-6 bg-white">
+        <h3 class="text-lg font-extrabold text-navy-900">3. Escuela Política (Nivel 3)</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Quien desee representar al partido como dirigente o candidato debe aprobar 6 meses obligatorios sin atajos.
+        </p>
+        <a href={withBase('/escuela-politica/')} class="mt-4 inline-block text-sm font-bold text-navy-900 underline underline-offset-4">
+          Conocer la Escuela Política →
+        </a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

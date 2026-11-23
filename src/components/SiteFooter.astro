@@ -1,0 +1,56 @@
+---
+import { REPO_URL, withBase } from '../lib/url';
+---
+
+<footer class="bg-navy-950 text-slate-200 border-t-2 border-gold-400 mt-16">
+  <div class="max-w-7xl mx-auto px-4 py-12 grid gap-8 md:grid-cols-3">
+    <div>
+      <p class="font-serif text-lg font-bold text-gold-300">Partido Plus Ultra (PU)</p>
+      <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+        Infraestructura digital pública dedicada a la transparencia orgánica, doctrinal y financiera.
+        Organización en tres poderes internos y cinco niveles escalonados.
+      </p>
+      <p class="mt-3 text-xs text-slate-400">
+        Alojamiento estático abierto a costo S/ 0.00 en GitHub Pages.
+      </p>
+    </div>
+
+    <div>
+      <p class="text-sm font-bold uppercase tracking-wider text-gold-300">Secciones Públicas</p>
+      <ul class="mt-3 space-y-2 text-sm">
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/estructura/')}>Estructura y Poderes</a></li>
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/transparencia/')}>Portal de Transparencia</a></li>
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/biblioteca/')}>Biblioteca Doctrinal</a></li>
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/militancia/')}>Militancia y Verificador</a></li>
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/escuela-politica/')}>Escuela Política</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="text-sm font-bold uppercase tracking-wider text-gold-300">Auditoría Ciudadana</p>
+      <ul class="mt-3 space-y-2 text-sm">
+        <li>
+          <a class="hover:text-gold-300 underline-offset-4 hover:underline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
+            Repositorio público en GitHub
+          </a>
+        </li>
+        <li>
+          <a class="hover:text-gold-300 underline-offset-4 hover:underline" href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer">
+            Historial inmutable de cambios (Git Ledger)
+          </a>
+        </li>
+        <li>
+          <a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/documentos/estructura-basica-v2.pdf')}>
+            Descargar Estructura Básica v2 (PDF)
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-navy-800 bg-navy-900/60">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between text-xs text-slate-400">
+      <span>Partido Plus Ultra · Perú · Infraestructura Abierta</span>
+      <span>Cero datos personales (PII) de militancia almacenados en este repositorio público.</span>
+    </div>
+  </div>
+</footer>

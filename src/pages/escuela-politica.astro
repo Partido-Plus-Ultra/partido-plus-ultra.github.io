@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import organigrama from '../data/organigrama.json';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="Escuela Política"
+  description="Formación obligatoria de mínimo 6 meses sin atajos para certificar el ascenso del Nivel 4 al Nivel 3 (Asamblea Dirigencial) en el Partido Plus Ultra."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-12">
+    <header class="space-y-3 border-b border-border pb-6">
+      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Formación Doctrinal Obligatoria</p>
+      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+        Escuela Política del Partido Plus Ultra
+      </h1>
+      <p class="text-base text-ink-muted max-w-3xl">
+        Ningún militante ni invitado puede postular a un cargo de elección popular ni ingresar a la Asamblea Dirigencial (Nivel 3) sin aprobar previamente la Escuela Política.
+      </p>
+    </header>
+
+    <section class="grid gap-6 md:grid-cols-3" aria-labelledby="reglas-escuela-heading">
+      <h2 id="reglas-escuela-heading" class="visually-hidden">Reglas fundamentales de la Escuela Política</h2>
+
+      <article class="rounded-xl border border-border bg-surface-muted p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Duración Mínima</p>
+        <p class="mt-1 text-3xl font-extrabold text-navy-900">{organigrama.escuelaPolitica.duracionMinimaMeses} meses</p>
+        <p class="mt-2 text-sm text-ink-muted">
+          Periodo mínimo obligatorio de formación continua, sin excepciones ni atajos administrativos.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-border bg-surface-muted p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Docentes Exclusivos</p>
+        <p class="mt-1 text-3xl font-extrabold text-navy-900">Nivel 1 y Nivel 2</p>
+        <p class="mt-2 text-sm text-ink-muted">
+          Solo el Triunvirato y los Guardianes del Poder Constitucional dictan clases y elaboran los libros y folletos de estudio.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-border bg-surface-muted p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Efecto de la Certificación</p>
+        <p class="mt-1 text-3xl font-extrabold text-navy-900">Ascenso a Nivel 3</p>
+        <p class="mt-2 text-sm text-ink-muted">
+          Quien aprueba y recibe su certificado pasa a integrar la Asamblea Dirigencial (La Cantera) y constituye el cuerpo pleno del partido.
+        </p>
+      </article>
+    </section>
+
+    <section class="rounded-2xl bg-navy-900 text-white p-6 sm:p-8 border-2 border-gold-400 space-y-4" aria-labelledby="campus-roadmap-heading">
+      <h2 id="campus-roadmap-heading" class="text-2xl font-extrabold text-white">
+        Hoja de Ruta Digital del Campus (Fases 2 y 3)
+      </h2>
+      <p class="text-sm sm:text-base text-slate-200 leading-relaxed max-w-3xl">
+        En la Fase 1 el material de estudio se publica abiertamente en la Biblioteca Doctrinal. En las Fases 2 y 3 se desplegará el Campus Digital con seguimiento estricto de los 6 meses en servidor, evaluaciones aprobadas por Nivel 1/Nivel 2 y emisión de Certificados Nivel 3 verificables mediante firma criptográfica Ed25519.
+      </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a href={withBase('/biblioteca/')} class="btn rounded-lg bg-gold-400 text-navy-950 font-extrabold px-5 py-2.5 text-sm hover:bg-gold-300">
+          Consultar Biblioteca de Estudio
+        </a>
+        <a href={withBase('/militancia/')} class="btn rounded-lg bg-navy-800 border border-gold-400 text-white font-bold px-5 py-2.5 text-sm hover:bg-navy-700">
+          Verificadores y Nivel 4
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

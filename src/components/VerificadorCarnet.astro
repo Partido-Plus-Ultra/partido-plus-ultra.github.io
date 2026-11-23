@@ -1,0 +1,177 @@
+---
+import revocaciones from '../data/revocaciones.json';
+import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
+---
+
+<section
+  id="verificador-carnet"
+  data-demo-token={DEMO_SAMPLE_TOKEN}
+  data-revocados={JSON.stringify(revocaciones.revocados)}
+  class="rounded-2xl border-2 border-navy-900 bg-surface p-6 sm:p-8 shadow-sm"
+  aria-labelledby="verificador-heading"
+>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+    <div>
+      <span class="inline-block rounded bg-navy-900 text-gold-300 text-xs font-bold uppercase tracking-wider px-2.5 py-1">
+        Criptografía Ed25519 · Verificación Local
+      </span>
+      <h2 id="verificador-heading" class="mt-2 text-2xl font-extrabold text-navy-900">
+        Verificador Oficial de Carnets y Certificados
+      </h2>
+    </div>
+    <p class="text-xs text-ink-muted">
+      Lista de revocaciones actualizada: <time datetime={revocaciones.ultimaActualizacion}>{revocaciones.ultimaActualizacion}</time>
+    </p>
+  </div>
+
+  <p class="mt-4 text-sm text-ink-muted leading-relaxed">
+    Comprueba si una credencial digital de <strong>Nivel 4</strong> o certificado de <strong>Nivel 3</strong> es auténtico
+    sin exponer la identidad del militante ni consultar bases de datos externas.
+  </p>
+
+  <form id="form-verificador" class="mt-5 space-y-4">
+    <div>
+      <label for="token-carnet" class="block text-sm font-bold text-navy-900">
+        Credencial digital (formato <code>PU1.&lt;carga&gt;.&lt;firma&gt;</code>)
+      </label>
+      <p id="token-ayuda" class="mt-1 text-xs text-ink-muted">
+        Pega la cadena completa del carnet o usa una credencial de prueba para comprobar el verificador criptográfico.
+      </p>
+      <textarea
+        id="token-carnet"
+        name="token"
+        rows="3"
+        aria-describedby="token-ayuda"
+        placeholder="PU1.eyJpZCI6IlBVLU40L..."
+        required
+        class="mt-2 w-full rounded-lg border border-border bg-surface-muted p-3 font-mono text-xs sm:text-sm text-ink"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <button
+        type="submit"
+        class="btn rounded-lg bg-navy-900 text-white px-5 py-2.5 text-sm font-bold hover:bg-navy-800 cursor-pointer"
+      >
+        Verificar firma Ed25519
+      </button>
+      <button
+        type="button"
+        id="btn-cargar-demo"
+        class="btn rounded-lg bg-gold-400 text-navy-950 px-4 py-2.5 text-sm font-bold hover:bg-gold-300 cursor-pointer"
+      >
+        Cargar credencial DEMO válida
+      </button>
+      <button
+        type="button"
+        id="btn-cargar-alterada"
+        class="btn rounded-lg bg-white text-navy-900 border border-border px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
+      >
+        Probar credencial alterada
+      </button>
+    </div>
+  </form>
+
+  <div
+    id="resultado-verificador"
+    class="mt-5 rounded-xl border border-border bg-surface-muted p-4 text-sm"
+    aria-live="polite"
+  >
+    Ingresa una credencial y pulsa <strong>Verificar firma Ed25519</strong>.
+  </div>
+</section>
+
+<script>
+  import { verifyCarnetToken } from '../lib/crypto-carnet';
+
+  const container = document.getElementById('verificador-carnet');
+  const demoToken = container?.dataset.demoToken ?? '';
+  let revocadosList: string[] = [];
+  try {
+    revocadosList = JSON.parse(container?.dataset.revocados ?? '[]');
+  } catch {
+    revocadosList = [];
+  }
+
+  const form = document.getElementById('form-verificador');
+  const textarea = document.getElementById('token-carnet');
+  const btnDemo = document.getElementById('btn-cargar-demo');
+  const btnAlterada = document.getElementById('btn-cargar-alterada');
+  const resultadoEl = document.getElementById('resultado-verificador');
+
+  async function runVerification() {
+    if (!(textarea instanceof HTMLTextAreaElement) || !resultadoEl) return;
+    const result = await verifyCarnetToken(textarea.value, revocadosList);
+
+    resultadoEl.className = 'mt-5 rounded-xl border p-4 text-sm';
+
+    if (result.status === 'valid') {
+      resultadoEl.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+      const nivelDesc =
+        result.payload.nivel === 3
+          ? 'Nivel 3 — Asamblea Dirigencial / Cantera (Escuela Política Certificada)'
+          : 'Nivel 4 — Militancia Operativa (Carnet Digital)';
+
+      resultadoEl.innerHTML = '';
+      const title = document.createElement('p');
+      title.className = 'font-extrabold text-base';
+      title.textContent = result.isDemo
+        ? 'FIRMA ED25519 VÁLIDA (CREDENCIAL DE DEMOSTRACIÓN)'
+        : 'CREDENCIAL OFICIAL AUTÉNTICA Y VIGENTE';
+
+      const list = document.createElement('dl');
+      list.className = 'mt-2 grid gap-1 sm:grid-cols-2 text-xs sm:text-sm';
+      const rows: [string, string][] = [
+        ['Identificador', result.payload.id],
+        ['Rango', nivelDesc],
+        ['Fecha de emisión', result.payload.emitido],
+        ['Escuela Política', result.payload.escuelaCertificada ? 'Aprobada y certificada' : 'No requerida para Nivel 4'],
+      ];
+      for (const [k, v] of rows) {
+        const dt = document.createElement('dt');
+        dt.className = 'font-bold';
+        dt.textContent = k;
+        const dd = document.createElement('dd');
+        dd.textContent = v;
+        list.append(dt, dd);
+      }
+      resultadoEl.append(title, list);
+      return;
+    }
+
+    if (result.status === 'revoked') {
+      resultadoEl.classList.add('border-amber-600', 'bg-amber-50', 'text-amber-950');
+      resultadoEl.textContent = `CREDENCIAL REVOCADA (${result.payload.id}): ${result.reason}`;
+      return;
+    }
+
+    if (result.status === 'unsupported') {
+      resultadoEl.classList.add('border-amber-600', 'bg-amber-50', 'text-amber-950');
+      resultadoEl.textContent = result.message;
+      return;
+    }
+
+    resultadoEl.classList.add('border-rose-700', 'bg-rose-50', 'text-rose-950');
+    resultadoEl.textContent = `CREDENCIAL INVÁLIDA: ${result.reason}`;
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    void runVerification();
+  });
+
+  btnDemo?.addEventListener('click', () => {
+    if (textarea instanceof HTMLTextAreaElement) {
+      textarea.value = demoToken;
+      void runVerification();
+    }
+  });
+
+  btnAlterada?.addEventListener('click', () => {
+    if (textarea instanceof HTMLTextAreaElement) {
+      const tampered = demoToken.slice(0, -4) + 'XXXX';
+      textarea.value = tampered;
+      void runVerification();
+    }
+  });
+</script>

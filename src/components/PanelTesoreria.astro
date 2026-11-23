@@ -1,0 +1,230 @@
+---
+import type { LibroTesoreria } from '../lib/tesoreria-metrics';
+import { calcularResumen, formatearMoneda } from '../lib/tesoreria-metrics';
+import { REPO_URL } from '../lib/url';
+
+interface Props {
+  libro: LibroTesoreria;
+}
+
+const { libro } = Astro.props;
+const resumen = calcularResumen(libro);
+const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))).sort();
+---
+
+<section aria-labelledby="tesoreria-heading" class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2 id="tesoreria-heading" class="text-2xl font-extrabold text-navy-900">
+        Tesorería Abierta (Ejercicio {libro.ejercicio})
+      </h2>
+      <p class="mt-1 text-sm text-ink-muted">
+        Responsable: <strong>{libro.responsable}</strong> · Última actualización: <time datetime={libro.ultimaActualizacion}>{libro.ultimaActualizacion}</time>
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <button
+        type="button"
+        id="btn-exportar-csv"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-4 py-2 text-sm font-semibold hover:bg-navy-800 border border-navy-900 cursor-pointer"
+      >
+        Exportar CSV auditable
+      </button>
+      <a
+        href={`${REPO_URL}/blob/main/src/data/tesoreria.json`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-white text-navy-900 px-4 py-2 text-sm font-semibold border border-navy-900 hover:bg-surface-muted"
+      >
+        Ver JSON en GitHub
+      </a>
+    </div>
+  </div>
+
+  <!-- Tarjetas resumen calculadas desde tesoreria.json -->
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-border bg-surface-muted p-4">
+      <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Saldo Inicial</p>
+      <p class="mt-1 text-2xl font-extrabold text-navy-900">{formatearMoneda(resumen.saldoInicialCentimos, libro.simbolo)}</p>
+    </div>
+    <div class="rounded-xl border border-border bg-surface-muted p-4">
+      <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Total Ingresos</p>
+      <p class="mt-1 text-2xl font-extrabold text-emerald-800">{formatearMoneda(resumen.totalIngresosCentimos, libro.simbolo)}</p>
+    </div>
+    <div class="rounded-xl border border-border bg-surface-muted p-4">
+      <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Total Egresos</p>
+      <p class="mt-1 text-2xl font-extrabold text-rose-800">{formatearMoneda(resumen.totalEgresosCentimos, libro.simbolo)}</p>
+    </div>
+    <div class="rounded-xl border-2 border-gold-400 bg-navy-900 text-white p-4">
+      <p class="text-xs font-bold uppercase tracking-wider text-gold-300">Saldo Neto Verificado</p>
+      <p class="mt-1 text-2xl font-extrabold text-white">{formatearMoneda(resumen.saldoNetoCentimos, libro.simbolo)}</p>
+    </div>
+  </div>
+
+  <!-- Filtros accesibles -->
+  <div class="rounded-xl border border-border bg-surface-muted p-4 grid gap-4 sm:grid-cols-3">
+    <div>
+      <label for="filtro-tipo" class="block text-sm font-bold text-navy-900">Filtrar por tipo</label>
+      <select id="filtro-tipo" class="mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink">
+        <option value="todos">Todos los movimientos</option>
+        <option value="ingreso">Solo ingresos</option>
+        <option value="egreso">Solo egresos</option>
+      </select>
+    </div>
+    <div>
+      <label for="filtro-categoria" class="block text-sm font-bold text-navy-900">Categoría</label>
+      <select id="filtro-categoria" class="mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink">
+        <option value="todas">Todas las categorías</option>
+        {categorias.map((cat) => (
+          <option value={cat}>{cat}</option>
+        ))}
+      </select>
+    </div>
+    <div>
+      <label for="filtro-busqueda" class="block text-sm font-bold text-navy-900">Buscar concepto o ID</label>
+      <input
+        id="filtro-busqueda"
+        type="search"
+        placeholder="Ej. Acta, imprenta, aporte..."
+        class="mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
+      />
+    </div>
+  </div>
+
+  <p id="tesoreria-estado" class="text-sm text-ink-muted" aria-live="polite">
+    Mostrando {libro.movimientos.length} de {libro.movimientos.length} movimientos registrados.
+  </p>
+
+  <div tabindex="0" role="region" aria-labelledby="tesoreria-caption" class="table-wrapper">
+    <table class="pu-table pu-table-tesoreria" id="tabla-tesoreria">
+      <caption id="tesoreria-caption">
+        Libro abierto de ingresos y egresos ({libro.moneda})
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Categoría</th>
+          <th scope="col">Concepto</th>
+          <th scope="col">Monto</th>
+          <th scope="col">Comprobante</th>
+        </tr>
+      </thead>
+      <tbody>
+        {libro.movimientos.length === 0 ? (
+          <tr data-empty-row>
+            <td colspan="7" class="text-center py-8 text-ink-muted">
+              Libro abierto sin movimientos registrados todavía (saldo real inicial: S/ 0.00).
+              Cada aporte o gasto aprobado por el Poder Constitucional aparecerá aquí con trazabilidad por commit de Git.
+            </td>
+          </tr>
+        ) : (
+          libro.movimientos.map((mov) => (
+            <tr
+              data-mov-row
+              data-tipo={mov.tipo}
+              data-categoria={mov.categoria}
+              data-texto={`${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`.toLowerCase()}
+            >
+              <th scope="row">{mov.id}</th>
+              <td>{mov.fecha}</td>
+              <td class="capitalize font-semibold">{mov.tipo}</td>
+              <td>{mov.categoria}</td>
+              <td>{mov.concepto}</td>
+              <td class="font-mono font-semibold">{formatearMoneda(mov.montoCentimos, libro.simbolo)}</td>
+              <td>{mov.comprobanteRef ?? 'Por adjuntar'}</td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script define:vars={{ libroJson: JSON.stringify(libro) }}>
+  const libroData = JSON.parse(libroJson);
+  const selectTipo = document.getElementById('filtro-tipo');
+  const selectCat = document.getElementById('filtro-categoria');
+  const inputBusq = document.getElementById('filtro-busqueda');
+  const estadoEl = document.getElementById('tesoreria-estado');
+  const btnCsv = document.getElementById('btn-exportar-csv');
+  const rows = Array.from(document.querySelectorAll('[data-mov-row]'));
+
+  function getFilteredMovs() {
+    const tipo = selectTipo instanceof HTMLSelectElement ? selectTipo.value : 'todos';
+    const cat = selectCat instanceof HTMLSelectElement ? selectCat.value : 'todas';
+    const q = inputBusq instanceof HTMLInputElement ? inputBusq.value.trim().toLowerCase() : '';
+
+    return libroData.movimientos.filter((mov) => {
+      if (tipo !== 'todos' && mov.tipo !== tipo) return false;
+      if (cat !== 'todas' && mov.categoria !== cat) return false;
+      if (q) {
+        const hay = `${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  function applyFilters() {
+    const tipo = selectTipo instanceof HTMLSelectElement ? selectTipo.value : 'todos';
+    const cat = selectCat instanceof HTMLSelectElement ? selectCat.value : 'todas';
+    const q = inputBusq instanceof HTMLInputElement ? inputBusq.value.trim().toLowerCase() : '';
+    let visible = 0;
+
+    for (const row of rows) {
+      const rTipo = row.getAttribute('data-tipo') || '';
+      const rCat = row.getAttribute('data-categoria') || '';
+      const rText = row.getAttribute('data-texto') || '';
+      const match =
+        (tipo === 'todos' || rTipo === tipo) &&
+        (cat === 'todas' || rCat === cat) &&
+        (!q || rText.includes(q));
+      row.toggleAttribute('hidden', !match);
+      if (match) visible += 1;
+    }
+
+    if (estadoEl) {
+      estadoEl.textContent = `Mostrando ${visible} de ${rows.length} movimientos registrados.`;
+    }
+  }
+
+  selectTipo?.addEventListener('change', applyFilters);
+  selectCat?.addEventListener('change', applyFilters);
+  inputBusq?.addEventListener('input', applyFilters);
+
+  function sanitizeCsvCell(value) {
+    const str = String(value ?? '');
+    const neutralized = /^[=+\-@\t\r]/.test(str) ? `'${str}` : str;
+    return `"${neutralized.replace(/"/g, '""')}"`;
+  }
+
+  btnCsv?.addEventListener('click', () => {
+    const filtered = getFilteredMovs();
+    const headers = ['ID', 'Fecha', 'Tipo', 'Categoria', 'Concepto', `Monto (${libroData.simbolo})`, 'Comprobante'];
+    const lines = [headers.map(sanitizeCsvCell).join(',')];
+    for (const mov of filtered) {
+      lines.push(
+        [
+          mov.id,
+          mov.fecha,
+          mov.tipo,
+          mov.categoria,
+          mov.concepto,
+          (mov.montoCentimos / 100).toFixed(2),
+          mov.comprobanteRef ?? '',
+        ]
+          .map(sanitizeCsvCell)
+          .join(',')
+      );
+    }
+    const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tesoreria-plus-ultra-${libroData.ejercicio}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>

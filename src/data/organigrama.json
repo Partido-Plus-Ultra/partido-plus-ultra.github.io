@@ -1,0 +1,216 @@
+{
+  "partido": {
+    "nombre": "Partido Plus Ultra",
+    "sigla": "PU",
+    "pais": "Perú",
+    "estado": "En etapa fundacional y estructuración orgánica",
+    "identidad": {
+      "resumen": "Defensa de los valores tradicionales, la familia, la fe cristiana (católica y evangélica) y el amor por el Perú, enfrentando tanto a la izquierda como a la derecha y a los políticos corruptos de siempre.",
+      "pilares": [
+        "Valores tradicionales y defensa de la familia",
+        "Fe cristiana (católica y evangélica)",
+        "Amor por el Perú y soberanía moral",
+        "Independencia frente a la izquierda, la derecha y la corrupción tradicional"
+      ]
+    },
+    "ejesGobernanza": {
+      "ascendente": "Ascenso por mérito y Escuela Política",
+      "descendente": "Supervisión doctrinal y dirección"
+    }
+  },
+  "poderes": [
+    {
+      "id": "ejecutivo",
+      "orden": 1,
+      "nombre": "Poder Ejecutivo",
+      "subtitulo": "El Triunvirato",
+      "nivelAsociado": 1,
+      "funcion": "Son los 3 líderes principales. Cuidan la imagen limpia del partido, mantienen la unidad, dialogan con autoridades de Perú y otros países, y consolidan los planes electorales.",
+      "puedePostular": false,
+      "puedeTenerEmpresas": false
+    },
+    {
+      "id": "constitucional",
+      "orden": 2,
+      "nombre": "Poder Constitucional",
+      "subtitulo": "Guardianes de la Idea",
+      "nivelAsociado": 2,
+      "funcion": "Cuidan que nunca se traicione nuestra ideología. Crean los libros, folletos y reglas para todo (eventos, elecciones, sanciones). Albergan al Secretario General, al Tesorero y a los Supervisores que vigilan que todo se cumpla.",
+      "puedePostular": false,
+      "puedeTenerEmpresas": false
+    },
+    {
+      "id": "legislativo",
+      "orden": 3,
+      "nombre": "Poder Legislativo",
+      "subtitulo": "La Asamblea / Cantera",
+      "nivelAsociado": 3,
+      "funcion": "Grupo de dirigentes preparados que debaten propuestas y trabajan en las regiones. Es la única cantera del partido: solo de aquí salen nuestros candidatos a Presidente, Diputados, Senadores, Alcaldes y Ministros.",
+      "puedePostular": true,
+      "puedeTenerEmpresas": true
+    }
+  ],
+  "niveles": [
+    {
+      "nivel": 1,
+      "nombre": "El Triunvirato",
+      "etiqueta": "Los 3 Líderes",
+      "poderId": "ejecutivo",
+      "plazasMin": 3,
+      "plazasMax": 3,
+      "composicion": "1 Líder Principal (renovación cada 8 años) y 2 Copresidentes en segundo lugar (renovación cada 4 años).",
+      "puedePostular": false,
+      "puedeTenerEmpresas": false,
+      "docenteEscuelaPolitica": true,
+      "reglas": [
+        "Imagen moral del partido; garantizan respaldo y unidad.",
+        "Prohibición absoluta de postular a Presidente, congresistas, alcaldes u otros cargos públicos.",
+        "Prohibición de tener empresas para mantenerse totalmente limpios e imparciales.",
+        "Docentes autorizados de la Escuela Política junto al Nivel 2."
+      ]
+    },
+    {
+      "nivel": 2,
+      "nombre": "Poder Constitucional",
+      "etiqueta": "Los Guardianes y Administradores",
+      "poderId": "constitucional",
+      "plazasMin": 5,
+      "plazasMax": 13,
+      "plazasPermitidas": [5, 7, 9, 11, 13],
+      "composicion": "Inicia con 5 intelectuales y puede crecer en número impar (7, 9, 11) hasta un máximo de 13. Incluye Secretario General (4 años), Tesorero (4 años) y Supervisores.",
+      "puedePostular": false,
+      "puedeTenerEmpresas": false,
+      "docenteEscuelaPolitica": true,
+      "reglas": [
+        "Rotación obligatoria: cada 2 años sale 1 miembro por orden de llegada y vuelve al Nivel 3 por 2 años antes de poder postular al Nivel 1.",
+        "Crean todo el material educativo, libros, folletos y reglamentos.",
+        "Junto al Nivel 1, son los únicos profesores de la Escuela Política.",
+        "Prohibición absoluta de postular a cargos públicos y de tener empresas."
+      ]
+    },
+    {
+      "nivel": 3,
+      "nombre": "La Asamblea Dirigencial",
+      "etiqueta": "La Cantera",
+      "poderId": "legislativo",
+      "plazasMin": null,
+      "plazasMax": null,
+      "composicion": "Profesionales, empresarios, trabajadores y líderes sociales que terminaron y aprobaron obligatoriamente la Escuela Política (mín. 6 meses).",
+      "puedePostular": true,
+      "puedeTenerEmpresas": true,
+      "docenteEscuelaPolitica": false,
+      "reglas": [
+        "Única cantera autorizada para postular a elecciones públicas (Presidente, Congreso, Alcaldías, Ministerios).",
+        "Cantera obligatoria de donde salen los futuros miembros del Nivel 2.",
+        "Llevan las ideas y propuestas del partido a las empresas, instituciones y regiones.",
+        "Al certificarse en la Escuela Política, pasan a constituir el cuerpo pleno del partido."
+      ]
+    },
+    {
+      "nivel": 4,
+      "nombre": "La Militancia Operativa",
+      "etiqueta": "Los Comprometidos",
+      "poderId": null,
+      "plazasMin": null,
+      "plazasMax": null,
+      "composicion": "Miembros activos inscritos con carnet digital (PU-N4). Apoyan en campañas, recolección de firmas, brigadas y trabajo de campo.",
+      "puedePostular": false,
+      "puedeTenerEmpresas": true,
+      "docenteEscuelaPolitica": false,
+      "escuelaMinimaMeses": 6,
+      "reglas": [
+        "Ingreso web anónimo mediante emisión de carnet digital oficial de Nivel 4.",
+        "No están obligados a postular a cargos públicos; pueden permanecer en Nivel 4 indefinidamente.",
+        "Para ascender al Nivel 3 es obligatorio estudiar y aprobar la Escuela Política durante un mínimo de 6 meses (sin excepciones ni atajos)."
+      ]
+    },
+    {
+      "nivel": 5,
+      "nombre": "Afiliados y Simpatizantes",
+      "etiqueta": "El Apoyo",
+      "poderId": null,
+      "plazasMin": null,
+      "plazasMax": null,
+      "composicion": "Base social de apoyo que colabora con su firma, su voto y difusión en redes sociales.",
+      "puedePostular": false,
+      "puedeTenerEmpresas": true,
+      "docenteEscuelaPolitica": false,
+      "reglas": [
+        "Sin obligaciones ni responsabilidades orgánicas fijas.",
+        "Base social desde donde los ciudadanos interesados pueden dar el paso a la militancia formal."
+      ]
+    }
+  ],
+  "escuelaPolitica": {
+    "duracionMinimaMeses": 6,
+    "atajosPermitidos": false,
+    "docentesExclusivosNiveles": [1, 2],
+    "transicion": {
+      "origen": 4,
+      "destino": 3,
+      "certificacionObligatoria": true
+    }
+  },
+  "arranqueFundacional": {
+    "grupoFundadorTotal": 15,
+    "baseInicialSimpatizantes": 50,
+    "distribucion": [
+      { "nivel": 1, "cantidad": 3, "rol": "Los 3 líderes fundadores asumen la dirección moral y representación del partido." },
+      { "nivel": 2, "cantidad": 5, "rol": "5 fundadores crean los reglamentos, los libros de estudio, la secretaría y las cuentas." },
+      { "nivel": 3, "cantidad": 3, "rol": "3 fundadores abren la Asamblea Dirigencial para organizar los planes de trabajo." },
+      { "nivel": 4, "cantidad": 4, "rol": "4 fundadores coordinan la logística operativa inicial de la Escuela Política y el trabajo en las calles." },
+      { "nivel": 5, "cantidad": 50, "rol": "50 personas de apoyo invitadas a integrarse formalmente a las primeras actividades y clases." }
+    ],
+    "notaDesambiguacion": "Conforme al Poder Constitucional (Nivel 2), la docencia y el contenido doctrinal de la Escuela Política son exclusivos del Nivel 1 y Nivel 2; los 4 fundadores asignados al Nivel 4 asumen la coordinación logística, convocatorias y despliegue operativo en calles."
+  },
+  "registroAutoridades": [
+    {
+      "cargo": "Líder Principal (Triunvirato)",
+      "nivel": 1,
+      "mandato": "8 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    },
+    {
+      "cargo": "Copresidente 1 (Triunvirato)",
+      "nivel": 1,
+      "mandato": "4 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    },
+    {
+      "cargo": "Copresidente 2 (Triunvirato)",
+      "nivel": 1,
+      "mandato": "4 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    },
+    {
+      "cargo": "Secretario General (Poder Constitucional)",
+      "nivel": 2,
+      "mandato": "4 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    },
+    {
+      "cargo": "Tesorero (Poder Constitucional)",
+      "nivel": 2,
+      "mandato": "4 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    },
+    {
+      "cargo": "Supervisores y Guardianes Doctrinarios (5 plazas iniciales)",
+      "nivel": 2,
+      "mandato": "Rotación escalonada cada 2 años",
+      "titular": "Por publicar (Acta fundacional pendiente)",
+      "estado": "En constitución",
+      "declaracionNoEmpresas": "Pendiente de publicación formal"
+    }
+  ]
+}

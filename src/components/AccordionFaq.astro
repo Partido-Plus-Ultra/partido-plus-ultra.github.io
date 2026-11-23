@@ -1,0 +1,28 @@
+---
+export interface FaqItem {
+  pregunta: string;
+  respuesta: string;
+}
+
+interface Props {
+  headingId: string;
+  titulo: string;
+  items: FaqItem[];
+}
+
+const { headingId, titulo, items } = Astro.props;
+---
+
+<section class="pu-accordion" aria-labelledby={headingId}>
+  <h2 id={headingId} class="text-2xl font-extrabold text-navy-900 mb-2">
+    {titulo}
+  </h2>
+  {items.map((item) => (
+    <details>
+      <summary>{item.pregunta}</summary>
+      <div class="accordion-body">
+        <p class="text-sm sm:text-base leading-relaxed text-ink">{item.respuesta}</p>
+      </div>
+    </details>
+  ))}
+</section>

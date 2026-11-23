@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PanelTesoreria from '../components/PanelTesoreria.astro';
+import organigrama from '../data/organigrama.json';
+import tesoreria from '../data/tesoreria.json';
+import type { LibroTesoreria } from '../lib/tesoreria-metrics';
+import { REPO_URL } from '../lib/url';
+
+const actas = (await getCollection('actas')).sort((a, b) =>
+  b.data.fecha.localeCompare(a.data.fecha)
+);
+---
+
+<BaseLayout
+  title="Portal de Transparencia"
+  description="Cuentas abiertas en tiempo real, actas públicas, registro de autoridades N1/N2/N3 y protocolo de supervisión ética del Partido Plus Ultra."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-14">
+    <header class="space-y-3 border-b border-border pb-6">
+      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Auditoría Pública Abierta</p>
+      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+        Portal de Transparencia y Cuentas Claras
+      </h1>
+      <p class="text-base text-ink-muted max-w-3xl">
+        Toda cifra, acta y regla de este portal está respaldada en un repositorio Git público. Ningún movimiento financiero puede alterarse sin dejar rastro verificable en el historial.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-1 text-sm">
+        <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="font-bold text-navy-900 underline underline-offset-4">
+          Auditar historial de commits en GitHub →
+        </a>
+      </div>
+    </header>
+
+    <!-- 1. Tesorería Abierta -->
+    <PanelTesoreria libro={tesoreria as LibroTesoreria} />
+
+    <!-- 2. Registro Público de Autoridades -->
+    <section aria-labelledby="autoridades-heading" class="space-y-4">
+      <div>
+        <h2 id="autoridades-heading" class="text-2xl font-extrabold text-navy-900">
+          Registro Público de Autoridades y Prohibición de Empresas (Nivel 1 y Nivel 2)
+        </h2>
+        <p class="mt-1 text-sm text-ink-muted">
+          Los cargos de Nivel 1 y Nivel 2 no pueden postular a elecciones públicas ni mantener empresas, garantizando imparcialidad moral y doctrinal.
+        </p>
+      </div>
+
+      <div tabindex="0" role="region" aria-labelledby="autoridades-caption" class="table-wrapper">
+        <table class="pu-table">
+          <caption id="autoridades-caption">
+            Plazas orgánicas de dirección, custodia doctrinal y administración
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Cargo</th>
+              <th scope="col">Nivel</th>
+              <th scope="col">Mandato / Rotación</th>
+              <th scope="col">Titular</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Declaración de No-Empresas</th>
+            </tr>
+          </thead>
+          <tbody>
+            {organigrama.registroAutoridades.map((aut) => (
+              <tr>
+                <th scope="row">{aut.cargo}</th>
+                <td>Nivel {aut.nivel}</td>
+                <td>{aut.mandato}</td>
+                <td>{aut.titular}</td>
+                <td>{aut.estado}</td>
+                <td>{aut.declaracionNoEmpresas}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. Supervisión y Canal Ético -->
+    <section aria-labelledby="supervision-heading" class="rounded-2xl bg-navy-900 text-white p-6 sm:p-8 border-2 border-gold-400">
+      <p class="text-xs font-bold uppercase tracking-widest text-gold-300">Poder Constitucional · Nivel 2</p>
+      <h2 id="supervision-heading" class="mt-1 text-2xl font-extrabold text-white">
+        Supervisión Interna y Protocolo de Sanciones
+      </h2>
+      <div class="mt-4 grid gap-6 md:grid-cols-3 text-sm text-slate-200">
+        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
+          <h3 class="font-bold text-gold-300">Vigilancia de Todos los Niveles</h3>
+          <p class="mt-2 leading-relaxed">
+            Los Supervisores del Nivel 2 fiscalizan el cumplimiento estricto de los reglamentos desde el Nivel 1 hasta el Nivel 5, evitando desviaciones ideológicas o privilegios.
+          </p>
+        </div>
+        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
+          <h3 class="font-bold text-gold-300">Cero Atajos en la Escuela Política</h3>
+          <p class="mt-2 leading-relaxed">
+            Cualquier intento de ingreso al Nivel 3 o postulación electoral sin cumplir los 6 meses obligatorios de Escuela Política es nulo de pleno derecho.
+          </p>
+        </div>
+        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
+          <h3 class="font-bold text-gold-300">Canal Ético Público (Fase 2)</h3>
+          <p class="mt-2 leading-relaxed">
+            Se habilitará el canal formal de alertas ante el Poder Constitucional una vez publicada el acta de instalación de los primeros 5 Guardianes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Actas Públicas -->
+    <section aria-labelledby="actas-heading" class="space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h2 id="actas-heading" class="text-2xl font-extrabold text-navy-900">
+            Actas Públicas del Partido
+          </h2>
+          <p class="mt-1 text-sm text-ink-muted">
+            Acuerdos formales publicados cronológicamente.
+          </p>
+        </div>
+        <div class="w-full sm:w-72">
+          <label for="buscar-acta" class="block text-xs font-bold uppercase tracking-wider text-navy-900">
+            Buscar acta
+          </label>
+          <input
+            id="buscar-acta"
+            type="search"
+            placeholder="Filtrar por número, órgano o tema..."
+            class="mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
+          />
+        </div>
+      </div>
+
+      <p id="actas-estado" class="text-sm text-ink-muted" aria-live="polite">
+        Mostrando {actas.length} de {actas.length} actas publicadas.
+      </p>
+
+      <div class="grid gap-4">
+        {actas.map((acta) => (
+          <article
+            data-acta-card
+            data-search={`${acta.data.numero} ${acta.data.titulo} ${acta.data.organo} ${acta.data.resumen}`.toLowerCase()}
+            class="rounded-xl border border-border bg-white p-5 shadow-sm"
+          >
+            <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+              <span class="rounded bg-navy-900 text-gold-300 px-2.5 py-0.5">Acta {acta.data.numero}</span>
+              <span class="rounded bg-surface-muted border border-border text-navy-900 px-2.5 py-0.5">{acta.data.organo}</span>
+              <time datetime={acta.data.fecha} class="text-ink-muted">{acta.data.fecha}</time>
+            </div>
+            <h3 class="mt-2 text-lg font-extrabold text-navy-900">{acta.data.titulo}</h3>
+            <p class="mt-1 text-sm text-ink-muted">{acta.data.resumen}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  const inputActa = document.getElementById('buscar-acta');
+  const estadoActas = document.getElementById('actas-estado');
+  const cards = Array.from(document.querySelectorAll('[data-acta-card]'));
+
+  inputActa?.addEventListener('input', () => {
+    const q = inputActa instanceof HTMLInputElement ? inputActa.value.trim().toLowerCase() : '';
+    let visible = 0;
+    for (const card of cards) {
+      const hay = card.getAttribute('data-search') || '';
+      const match = !q || hay.includes(q);
+      card.toggleAttribute('hidden', !match);
+      if (match) visible += 1;
+    }
+    if (estadoActas) {
+      estadoActas.textContent = `Mostrando ${visible} de ${cards.length} actas publicadas.`;
+    }
+  });
+</script>

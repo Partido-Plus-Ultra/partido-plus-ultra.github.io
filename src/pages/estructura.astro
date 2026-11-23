@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PiramideInteractiva from '../components/PiramideInteractiva.astro';
+import organigrama from '../data/organigrama.json';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="Estructura y Poderes"
+  description="Detalle completo de los tres poderes internos, cinco niveles escalonados, rotaciones y prohibiciones del Partido Plus Ultra."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-12">
+    <header class="space-y-3 border-b border-border pb-6">
+      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Arquitectura Orgánica</p>
+      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+        Estructura Orgánica: Tres Poderes y Cinco Niveles
+      </h1>
+      <p class="text-base text-ink-muted max-w-3xl">
+        {organigrama.partido.identidad.resumen}
+      </p>
+      <div class="pt-2">
+        <a
+          href={withBase('/documentos/estructura-basica-v2.pdf')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-4 py-2 text-sm font-bold hover:bg-navy-800"
+        >
+          Descargar Documento Oficial PDF (v2)
+        </a>
+      </div>
+    </header>
+
+    <PiramideInteractiva />
+
+    <!-- Reglas de Arranque Fundacional -->
+    <section aria-labelledby="arranque-heading" class="space-y-6">
+      <div>
+        <h2 id="arranque-heading" class="text-2xl font-extrabold text-navy-900">
+          Plan de Arranque Fundacional ({organigrama.arranqueFundacional.grupoFundadorTotal} fundadores + {organigrama.arranqueFundacional.baseInicialSimpatizantes} simpatizantes)
+        </h2>
+        <p class="mt-1 text-sm text-ink-muted">
+          Distribución inicial de responsabilidades definida en el documento fundacional.
+        </p>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {organigrama.arranqueFundacional.distribucion.map((item) => (
+          <article class="rounded-xl border border-border bg-surface-muted p-4">
+            <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Nivel {item.nivel}</p>
+            <p class="mt-1 text-2xl font-extrabold text-navy-900">{item.cantidad} personas</p>
+            <p class="mt-2 text-sm text-ink leading-snug">{item.rol}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="rounded-xl border-l-4 border-gold-400 bg-navy-900 text-slate-100 p-5 text-sm">
+        <p class="font-bold text-gold-300">Claridad Normativa sobre Docencia y Logística</p>
+        <p class="mt-1 leading-relaxed">{organigrama.arranqueFundacional.notaDesambiguacion}</p>
+      </div>
+    </section>
+
+    <!-- Infografía oficial -->
+    <section aria-labelledby="infografia-heading" class="space-y-4">
+      <h2 id="infografia-heading" class="text-2xl font-extrabold text-navy-900">
+        Infografía Visual Oficial
+      </h2>
+      <figure class="rounded-xl overflow-hidden border border-border bg-navy-950 max-w-4xl">
+        <img
+          src={withBase('/img/infografia-estructura-partido.jpg')}
+          alt="Diagrama visual de los tres poderes (Ejecutivo, Constitucional, Legislativo) y los cinco niveles del Partido Plus Ultra."
+          class="w-full h-auto block"
+          width="1200"
+          height="675"
+        />
+        <figcaption class="px-4 py-3 text-xs sm:text-sm text-slate-200 bg-navy-950">
+          Esquema oficial del Partido Plus Ultra: Nivel 1 (Triunvirato) y Nivel 2 (Poder Constitucional) no postulan ni poseen empresas; Nivel 3 (Asamblea Dirigencial) concentra la cantera electoral tras aprobar 6 meses obligatorios de Escuela Política.
+        </figcaption>
+      </figure>
+    </section>
+  </div>
+</BaseLayout>

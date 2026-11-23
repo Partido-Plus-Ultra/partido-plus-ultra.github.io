@@ -1,0 +1,128 @@
+---
+import { withBase } from '../lib/url';
+
+const navItems = [
+  { label: 'Inicio', path: '/' },
+  { label: 'Estructura', path: '/estructura/' },
+  { label: 'Transparencia', path: '/transparencia/' },
+  { label: 'Biblioteca', path: '/biblioteca/' },
+  { label: 'Militancia', path: '/militancia/' },
+  { label: 'Escuela Política', path: '/escuela-politica/' },
+];
+
+function isCurrentPath(itemPath: string, currentPath: string): boolean {
+  const target = withBase(itemPath);
+  if (itemPath === '/') {
+    return currentPath === target || currentPath === target.replace(/\/$/, '');
+  }
+  return currentPath.startsWith(target);
+}
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header" data-site-header>
+  <div class="header-inner">
+    <a class="site-logo" href={withBase('/')}>
+      <span class="site-logo-mark" aria-hidden="true">PU</span>
+      <span class="site-logo-text">
+        <span class="site-logo-title">Partido Plus Ultra</span>
+        <span class="site-logo-sub">Transparencia Abierta · Perú</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Principal">
+      <button
+        class="menu-button"
+        type="button"
+        popovertarget="site-menu"
+        popovertargetaction="toggle"
+        aria-controls="site-menu"
+      >
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
+        <span>Menú</span>
+      </button>
+
+      <ul id="site-menu" class="site-menu" popover="auto">
+        {navItems.map((item) => {
+          const isCurrent = isCurrentPath(item.path, currentPath);
+          return (
+            <li>
+              <a
+                class="nav-link"
+                href={withBase(item.path)}
+                aria-current={isCurrent ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  if (!Object.hasOwn(HTMLElement.prototype, 'popover')) {
+    import('@oddbird/popover-polyfill');
+  }
+
+  const header = document.querySelector('[data-site-header]');
+  const inner = header?.querySelector('.header-inner');
+  const menu = header?.querySelector('#site-menu');
+
+  if (header && inner && menu) {
+    let lastWidth = header.getBoundingClientRect().width;
+    let rafId = 0;
+
+    const updateLayout = () => {
+      const wasOpen = menu.matches(':popover-open, .\\:popover-open');
+
+      header.classList.add('is-measuring');
+      header.classList.add('is-wide');
+      menu.removeAttribute('popover');
+
+      const fits = inner.scrollWidth <= inner.clientWidth;
+
+      if (!fits) {
+        header.classList.remove('is-wide');
+        menu.setAttribute('popover', 'auto');
+        if (wasOpen && typeof (menu as HTMLElement).showPopover === 'function') {
+          try {
+            (menu as HTMLElement).showPopover();
+          } catch {
+            // Ignored if polyfill initializes asynchronously
+          }
+        }
+      }
+
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        header.classList.remove('is-measuring');
+      });
+    };
+
+    updateLayout();
+
+    const observer = new ResizeObserver((entries) => {
+      const headerWidth = header.getBoundingClientRect().width;
+      const isWide = header.classList.contains('is-wide');
+      const menuChanged = entries.some((entry) => entry.target === menu);
+
+      if (isWide || headerWidth > lastWidth || menuChanged) {
+        lastWidth = headerWidth;
+        updateLayout();
+      } else {
+        lastWidth = headerWidth;
+      }
+    });
+
+    observer.observe(header);
+    observer.observe(menu);
+  }
+</script>
