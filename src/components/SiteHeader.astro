@@ -80,8 +80,17 @@ const currentPath = Astro.url.pathname;
     let lastWidth = header.getBoundingClientRect().width;
     let rafId = 0;
 
+    const isPopoverOpen = (el: Element): boolean => {
+      if (el.classList.contains(':popover-open')) return true;
+      try {
+        return el.matches(':popover-open');
+      } catch {
+        return false;
+      }
+    };
+
     const updateLayout = () => {
-      const wasOpen = menu.matches(':popover-open, .\\:popover-open');
+      const wasOpen = isPopoverOpen(menu);
 
       header.classList.add('is-measuring');
       header.classList.add('is-wide');

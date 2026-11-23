@@ -5,7 +5,7 @@ import PanelTesoreria from '../components/PanelTesoreria.astro';
 import organigrama from '../data/organigrama.json';
 import tesoreria from '../data/tesoreria.json';
 import type { LibroTesoreria } from '../lib/tesoreria-metrics';
-import { REPO_URL } from '../lib/url';
+import { REPO_URL, withBase } from '../lib/url';
 
 const actas = (await getCollection('actas')).sort((a, b) =>
   b.data.fecha.localeCompare(a.data.fecha)
@@ -47,7 +47,7 @@ const actas = (await getCollection('actas')).sort((a, b) =>
       </div>
 
       <div tabindex="0" role="region" aria-labelledby="autoridades-caption" class="table-wrapper">
-        <table class="pu-table">
+        <table class="pu-table pu-table-autoridades">
           <caption id="autoridades-caption">
             Plazas orgánicas de dirección, custodia doctrinal y administración
           </caption>
@@ -147,6 +147,14 @@ const actas = (await getCollection('actas')).sort((a, b) =>
             </div>
             <h3 class="mt-2 text-lg font-extrabold text-navy-900">{acta.data.titulo}</h3>
             <p class="mt-1 text-sm text-ink-muted">{acta.data.resumen}</p>
+            <div class="mt-4 pt-3 border-t border-border">
+              <a
+                href={withBase(`/transparencia/actas/${acta.id}/`)}
+                class="text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700"
+              >
+                Leer acta completa →
+              </a>
+            </div>
           </article>
         ))}
       </div>

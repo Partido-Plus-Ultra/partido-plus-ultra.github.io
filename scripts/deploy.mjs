@@ -29,10 +29,11 @@ if (!fs.existsSync(path.join(distDir, '.nojekyll'))) {
 }
 
 const tempWorktree = fs.mkdtempSync(path.join(os.tmpdir(), 'pu-gh-pages-'));
+const tempBranch = `gh-pages-deploy-${Date.now()}`;
 
 try {
   run(`git worktree add --detach "${tempWorktree}"`);
-  run(`git -C "${tempWorktree}" checkout --orphan gh-pages-deploy`);
+  run(`git -C "${tempWorktree}" checkout --orphan ${tempBranch}`);
 
   for (const entry of fs.readdirSync(tempWorktree)) {
     if (entry === '.git') continue;
@@ -50,6 +51,11 @@ try {
 } finally {
   try {
     execSync(`git worktree remove --force "${tempWorktree}"`, { cwd: rootDir, stdio: 'ignore', shell: true });
+  } catch {
+    // Cleanup best-effort
+  }
+  try {
+    execSync(`git branch -D ${tempBranch}`, { cwd: rootDir, stdio: 'ignore', shell: true });
   } catch {
     // Cleanup best-effort
   }

@@ -4,6 +4,7 @@ import { SITE_URL, withBase } from '../lib/url';
 
 export const GET: APIRoute = async () => {
   const documentos = await getCollection('documentos');
+  const actas = await getCollection('actas');
   const staticPaths = [
     '/',
     '/estructura/',
@@ -12,6 +13,7 @@ export const GET: APIRoute = async () => {
     '/militancia/',
     '/escuela-politica/',
     ...documentos.map((doc) => `/biblioteca/${doc.id}/`),
+    ...actas.map((acta) => `/transparencia/actas/${acta.id}/`),
   ];
 
   const urls = staticPaths

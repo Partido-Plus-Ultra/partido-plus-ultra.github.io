@@ -445,6 +445,22 @@ body {
   .pu-table-tesoreria tbody td:nth-child(7)::before {
     content: var(--label-7, "Comprobante") ": ";
   }
+
+  .pu-table-autoridades tbody td:nth-child(2)::before {
+    content: "Nivel: ";
+  }
+  .pu-table-autoridades tbody td:nth-child(3)::before {
+    content: "Mandato / Rotación: ";
+  }
+  .pu-table-autoridades tbody td:nth-child(4)::before {
+    content: "Titular: ";
+  }
+  .pu-table-autoridades tbody td:nth-child(5)::before {
+    content: "Estado: ";
+  }
+  .pu-table-autoridades tbody td:nth-child(6)::before {
+    content: "Declaración No-Empresas: ";
+  }
 }
 
 /* ==========================================================================
