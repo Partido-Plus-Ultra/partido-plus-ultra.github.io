@@ -1,4 +1,9 @@
 ---
+import '@fontsource/libre-baskerville/400.css';
+import '@fontsource/libre-baskerville/700.css';
+import '@fontsource-variable/plus-jakarta-sans';
+import baskerville700Url from '@fontsource/libre-baskerville/files/libre-baskerville-latin-700-normal.woff2?url';
+import jakartaVarUrl from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -13,7 +18,7 @@ interface Props {
 const {
   title,
   description,
-  ogImage = '/img/infografia-estructura-partido.jpg',
+  ogImage = '/img/og-whatsapp-1200x630.jpg',
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).toString();
@@ -31,6 +36,10 @@ const fullTitle = `${title} | Partido Plus Ultra`;
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
 
+    <!-- Preload tipografías críticas auto-alojadas -->
+    <link rel="preload" href={baskerville700Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={jakartaVarUrl} as="font" type="font/woff2" crossorigin />
+
     <!-- OpenGraph / WhatsApp -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_PE" />
@@ -39,12 +48,14 @@ const fullTitle = `${title} | Partido Plus Ultra`;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
   </head>
-  <body class="min-h-dvh flex flex-col bg-surface text-ink antialiased">
+  <body class="min-h-dvh flex flex-col bg-surface-page text-ink antialiased">
     <a href="#contenido-principal" class="skip-link visually-hidden">
       Saltar al contenido principal
     </a>

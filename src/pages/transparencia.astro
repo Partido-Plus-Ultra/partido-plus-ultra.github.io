@@ -1,7 +1,10 @@
 ---
+import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PanelTesoreria from '../components/PanelTesoreria.astro';
+import Icon from '../components/Icon.astro';
+import visualTransparencia from '../assets/img/visual-transparencia.webp';
 import organigrama from '../data/organigrama.json';
 import tesoreria from '../data/tesoreria.json';
 import type { LibroTesoreria } from '../lib/tesoreria-metrics';
@@ -17,18 +20,44 @@ const actas = (await getCollection('actas')).sort((a, b) =>
   description="Cuentas abiertas en tiempo real, actas públicas, registro de autoridades N1/N2/N3 y protocolo de supervisión ética del Partido Plus Ultra."
 >
   <div class="max-w-7xl mx-auto px-4 py-10 space-y-14">
-    <header class="space-y-3 border-b border-border pb-6">
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Auditoría Pública Abierta</p>
-      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
-        Portal de Transparencia y Cuentas Claras
-      </h1>
-      <p class="text-base text-ink-muted max-w-3xl">
-        Toda cifra, acta y regla de este portal está respaldada en un repositorio Git público. Ningún movimiento financiero puede alterarse sin dejar rastro verificable en el historial.
-      </p>
-      <div class="flex flex-wrap gap-4 pt-1 text-sm">
-        <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="font-bold text-navy-900 underline underline-offset-4">
-          Auditar historial de commits en GitHub →
-        </a>
+    <!-- Cabecera editorial 60/40 -->
+    <header class="rounded-2xl bg-navy-900 text-white border-2 border-gold-400 p-6 sm:p-8 lg:p-10 grid gap-8 lg:grid-cols-12 items-center shadow-lg">
+      <div class="lg:col-span-7 space-y-3">
+        <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-300">
+          <Icon name="scale" class="w-4 h-4" />
+          <span>Auditoría Pública Abierta</span>
+        </p>
+        <h1 id="contenido-principal" tabindex="-1" class="font-bold text-white">
+          Portal de Transparencia y Cuentas Claras
+        </h1>
+        <p class="text-base text-slate-200 leading-relaxed max-w-2xl">
+          Toda cifra, acta y regla de este portal está respaldada en un repositorio Git público. Ningún movimiento financiero puede alterarse sin dejar rastro verificable en el historial.
+        </p>
+        <div class="pt-2">
+          <a
+            href={`${REPO_URL}/commits/main`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-5 py-2.5 text-sm font-bold hover:bg-gold-300"
+          >
+            <Icon name="github" class="w-4 h-4" />
+            <span>Auditar historial de commits en GitHub</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="rounded-xl overflow-hidden border border-gold-400/70 bg-navy-950 shadow-inner">
+          <Picture
+            src={visualTransparencia}
+            formats={['avif', 'webp']}
+            widths={[480, 800]}
+            sizes="(max-width: 1024px) 100vw, 40vw"
+            alt="Ilustración institucional de balanza cívica y libro contable abierto."
+            loading="eager"
+            class="w-full h-auto block"
+          />
+        </div>
       </div>
     </header>
 
@@ -38,7 +67,7 @@ const actas = (await getCollection('actas')).sort((a, b) =>
     <!-- 2. Registro Público de Autoridades -->
     <section aria-labelledby="autoridades-heading" class="space-y-4">
       <div>
-        <h2 id="autoridades-heading" class="text-2xl font-extrabold text-navy-900">
+        <h2 id="autoridades-heading" class="text-2xl sm:text-3xl font-bold text-navy-900">
           Registro Público de Autoridades y Prohibición de Empresas (Nivel 1 y Nivel 2)
         </h2>
         <p class="mt-1 text-sm text-ink-muted">
@@ -78,26 +107,38 @@ const actas = (await getCollection('actas')).sort((a, b) =>
     </section>
 
     <!-- 3. Supervisión y Canal Ético -->
-    <section aria-labelledby="supervision-heading" class="rounded-2xl bg-navy-900 text-white p-6 sm:p-8 border-2 border-gold-400">
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-300">Poder Constitucional · Nivel 2</p>
-      <h2 id="supervision-heading" class="mt-1 text-2xl font-extrabold text-white">
+    <section aria-labelledby="supervision-heading" class="rounded-2xl bg-civic-grid text-white p-6 sm:p-8 border-2 border-gold-400 shadow-lg">
+      <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-300">
+        <Icon name="shield" class="w-4 h-4" />
+        <span>Poder Constitucional · Nivel 2</span>
+      </p>
+      <h2 id="supervision-heading" class="mt-1.5 text-2xl sm:text-3xl font-bold text-white">
         Supervisión Interna y Protocolo de Sanciones
       </h2>
-      <div class="mt-4 grid gap-6 md:grid-cols-3 text-sm text-slate-200">
-        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
-          <h3 class="font-bold text-gold-300">Vigilancia de Todos los Niveles</h3>
+      <div class="mt-5 grid gap-6 md:grid-cols-3 text-sm text-slate-200">
+        <div class="rounded-xl bg-navy-950/85 p-5 border border-gold-400/40">
+          <h3 class="font-bold text-gold-300 flex items-center gap-2 text-base">
+            <Icon name="scale" class="w-4 h-4" />
+            <span>Vigilancia de Todos los Niveles</span>
+          </h3>
           <p class="mt-2 leading-relaxed">
             Los Supervisores del Nivel 2 fiscalizan el cumplimiento estricto de los reglamentos desde el Nivel 1 hasta el Nivel 5, evitando desviaciones ideológicas o privilegios.
           </p>
         </div>
-        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
-          <h3 class="font-bold text-gold-300">Cero Atajos en la Escuela Política</h3>
+        <div class="rounded-xl bg-navy-950/85 p-5 border border-gold-400/40">
+          <h3 class="font-bold text-gold-300 flex items-center gap-2 text-base">
+            <Icon name="lock" class="w-4 h-4" />
+            <span>Cero Atajos en la Escuela Política</span>
+          </h3>
           <p class="mt-2 leading-relaxed">
             Cualquier intento de ingreso al Nivel 3 o postulación electoral sin cumplir los 6 meses obligatorios de Escuela Política es nulo de pleno derecho.
           </p>
         </div>
-        <div class="rounded-xl bg-navy-800 p-4 border border-navy-700">
-          <h3 class="font-bold text-gold-300">Canal Ético Público (Fase 2)</h3>
+        <div class="rounded-xl bg-navy-950/85 p-5 border border-gold-400/40">
+          <h3 class="font-bold text-gold-300 flex items-center gap-2 text-base">
+            <Icon name="alert" class="w-4 h-4" />
+            <span>Canal Ético Público (Fase 2)</span>
+          </h3>
           <p class="mt-2 leading-relaxed">
             Se habilitará el canal formal de alertas ante el Poder Constitucional una vez publicada el acta de instalación de los primeros 5 Guardianes.
           </p>
@@ -109,11 +150,11 @@ const actas = (await getCollection('actas')).sort((a, b) =>
     <section aria-labelledby="actas-heading" class="space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h2 id="actas-heading" class="text-2xl font-extrabold text-navy-900">
+          <h2 id="actas-heading" class="text-2xl sm:text-3xl font-bold text-navy-900">
             Actas Públicas del Partido
           </h2>
           <p class="mt-1 text-sm text-ink-muted">
-            Acuerdos formales publicados cronológicamente.
+            Acuerdos formales publicados cronológicamente en formato expediente auditable.
           </p>
         </div>
         <div class="w-full sm:w-72">
@@ -124,12 +165,12 @@ const actas = (await getCollection('actas')).sort((a, b) =>
             id="buscar-acta"
             type="search"
             placeholder="Filtrar por número, órgano o tema..."
-            class="mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
+            class="mt-1 w-full rounded-lg border border-ink-muted/60 bg-white px-3 py-2 text-sm text-ink"
           />
         </div>
       </div>
 
-      <p id="actas-estado" class="text-sm text-ink-muted" aria-live="polite">
+      <p id="actas-estado" class="text-sm font-medium text-ink-muted" aria-live="polite">
         Mostrando {actas.length} de {actas.length} actas publicadas.
       </p>
 
@@ -138,21 +179,25 @@ const actas = (await getCollection('actas')).sort((a, b) =>
           <article
             data-acta-card
             data-search={`${acta.data.numero} ${acta.data.titulo} ${acta.data.organo} ${acta.data.resumen}`.toLowerCase()}
-            class="rounded-xl border border-border bg-white p-5 shadow-sm"
+            class="rounded-xl border border-border border-s-4 border-s-gold-400 bg-white p-5 sm:p-6 shadow-sm"
           >
             <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span class="rounded bg-navy-900 text-gold-300 px-2.5 py-0.5">Acta {acta.data.numero}</span>
+              <span class="inline-flex items-center gap-1 rounded bg-navy-900 text-gold-300 px-2.5 py-0.5">
+                <Icon name="document" class="w-3.5 h-3.5" />
+                <span>Acta {acta.data.numero}</span>
+              </span>
               <span class="rounded bg-surface-muted border border-border text-navy-900 px-2.5 py-0.5">{acta.data.organo}</span>
               <time datetime={acta.data.fecha} class="text-ink-muted">{acta.data.fecha}</time>
             </div>
-            <h3 class="mt-2 text-lg font-extrabold text-navy-900">{acta.data.titulo}</h3>
-            <p class="mt-1 text-sm text-ink-muted">{acta.data.resumen}</p>
+            <h3 class="mt-2.5 text-lg sm:text-xl font-bold text-navy-900">{acta.data.titulo}</h3>
+            <p class="mt-1.5 text-sm text-ink-muted leading-relaxed">{acta.data.resumen}</p>
             <div class="mt-4 pt-3 border-t border-border">
               <a
                 href={withBase(`/transparencia/actas/${acta.id}/`)}
-                class="text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700"
+                class="inline-flex items-center gap-1.5 text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700"
               >
-                Leer acta completa →
+                <span>Leer acta completa</span>
+                <Icon name="arrow-right" class="w-4 h-4" />
               </a>
             </div>
           </article>

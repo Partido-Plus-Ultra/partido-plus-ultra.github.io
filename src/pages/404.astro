@@ -1,12 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EmblemaSvg from '../components/EmblemaSvg.astro';
 import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Página no encontrada" description="La ruta solicitada no existe en el portal oficial del Partido Plus Ultra.">
   <section class="max-w-3xl mx-auto px-4 py-20 text-center space-y-5">
-    <p class="text-sm font-extrabold uppercase tracking-widest text-gold-700">Error 404</p>
-    <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+    <div class="flex justify-center">
+      <EmblemaSvg class="w-16 h-16" decorative={true} />
+    </div>
+    <p class="text-sm font-bold uppercase tracking-widest text-gold-700">Error 404</p>
+    <h1 id="contenido-principal" tabindex="-1" class="font-bold text-navy-900">
       Página no encontrada
     </h1>
     <p class="text-base text-ink-muted">
@@ -16,7 +20,7 @@ import { withBase } from '../lib/url';
       <a href={withBase('/')} class="btn rounded-lg bg-navy-900 text-white px-5 py-2.5 text-sm font-bold hover:bg-navy-800">
         Volver al Inicio
       </a>
-      <a href={withBase('/transparencia/')} class="btn rounded-lg bg-surface-muted border border-border text-navy-900 px-5 py-2.5 text-sm font-bold hover:bg-slate-200">
+      <a href={withBase('/transparencia/')} class="btn rounded-lg bg-white border border-border text-navy-900 px-5 py-2.5 text-sm font-bold hover:bg-surface-muted">
         Portal de Transparencia
       </a>
     </div>

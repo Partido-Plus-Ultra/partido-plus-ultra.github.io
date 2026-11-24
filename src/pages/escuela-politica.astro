@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EscuelaIlustracionSvg from '../components/EscuelaIlustracionSvg.astro';
+import Icon from '../components/Icon.astro';
 import organigrama from '../data/organigrama.json';
 import { withBase } from '../lib/url';
 ---
@@ -9,57 +11,100 @@ import { withBase } from '../lib/url';
   description="Formación obligatoria de mínimo 6 meses sin atajos para certificar el ascenso del Nivel 4 al Nivel 3 (Asamblea Dirigencial) en el Partido Plus Ultra."
 >
   <div class="max-w-7xl mx-auto px-4 py-10 space-y-12">
-    <header class="space-y-3 border-b border-border pb-6">
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Formación Doctrinal Obligatoria</p>
-      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
-        Escuela Política del Partido Plus Ultra
-      </h1>
-      <p class="text-base text-ink-muted max-w-3xl">
-        Ningún militante ni invitado puede postular a un cargo de elección popular ni ingresar a la Asamblea Dirigencial (Nivel 3) sin aprobar previamente la Escuela Política.
-      </p>
+    <!-- Cabecera editorial -->
+    <header class="rounded-2xl bg-navy-900 text-white border-2 border-gold-400 p-6 sm:p-8 lg:p-10 grid gap-8 lg:grid-cols-12 items-center shadow-lg">
+      <div class="lg:col-span-7 space-y-3">
+        <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-300">
+          <Icon name="school" class="w-4 h-4" />
+          <span>Formación Doctrinal Obligatoria</span>
+        </p>
+        <h1 id="contenido-principal" tabindex="-1" class="font-bold text-white">
+          Escuela Política del Partido Plus Ultra
+        </h1>
+        <p class="text-base text-slate-200 leading-relaxed max-w-2xl">
+          Ningún militante ni invitado puede postular a un cargo de elección popular ni ingresar a la Asamblea Dirigencial (Nivel 3) sin aprobar previamente la Escuela Política.
+        </p>
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="rounded-xl overflow-hidden border border-gold-400/70 bg-navy-950 shadow-inner">
+          <EscuelaIlustracionSvg />
+        </div>
+      </div>
     </header>
 
     <section class="grid gap-6 md:grid-cols-3" aria-labelledby="reglas-escuela-heading">
       <h2 id="reglas-escuela-heading" class="visually-hidden">Reglas fundamentales de la Escuela Política</h2>
 
-      <article class="rounded-xl border border-border bg-surface-muted p-6">
+      <article class="rounded-xl border border-border border-t-4 border-t-gold-400 bg-white p-6 shadow-sm">
         <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Duración Mínima</p>
-        <p class="mt-1 text-3xl font-extrabold text-navy-900">{organigrama.escuelaPolitica.duracionMinimaMeses} meses</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{organigrama.escuelaPolitica.duracionMinimaMeses} meses</p>
         <p class="mt-2 text-sm text-ink-muted">
           Periodo mínimo obligatorio de formación continua, sin excepciones ni atajos administrativos.
         </p>
       </article>
 
-      <article class="rounded-xl border border-border bg-surface-muted p-6">
+      <article class="rounded-xl border border-border border-t-4 border-t-navy-900 bg-white p-6 shadow-sm">
         <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Docentes Exclusivos</p>
-        <p class="mt-1 text-3xl font-extrabold text-navy-900">Nivel 1 y Nivel 2</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900">Nivel 1 y Nivel 2</p>
         <p class="mt-2 text-sm text-ink-muted">
           Solo el Triunvirato y los Guardianes del Poder Constitucional dictan clases y elaboran los libros y folletos de estudio.
         </p>
       </article>
 
-      <article class="rounded-xl border border-border bg-surface-muted p-6">
+      <article class="rounded-xl border border-border border-t-4 border-t-gold-400 bg-white p-6 shadow-sm">
         <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Efecto de la Certificación</p>
-        <p class="mt-1 text-3xl font-extrabold text-navy-900">Ascenso a Nivel 3</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900">Ascenso a Nivel 3</p>
         <p class="mt-2 text-sm text-ink-muted">
           Quien aprueba y recibe su certificado pasa a integrar la Asamblea Dirigencial (La Cantera) y constituye el cuerpo pleno del partido.
         </p>
       </article>
     </section>
 
-    <section class="rounded-2xl bg-navy-900 text-white p-6 sm:p-8 border-2 border-gold-400 space-y-4" aria-labelledby="campus-roadmap-heading">
-      <h2 id="campus-roadmap-heading" class="text-2xl font-extrabold text-white">
+    <!-- Línea de tiempo anti-fraude -->
+    <section class="rounded-2xl bg-white border border-border p-6 sm:p-8 shadow-sm space-y-6" aria-labelledby="ruta-ascenso-heading">
+      <h2 id="ruta-ascenso-heading" class="text-2xl font-bold text-navy-900">
+        Ruta de Ascenso y Modelo Híbrido Anti-Fraude
+      </h2>
+      <ol class="grid gap-4 md:grid-cols-4">
+        <li class="rounded-xl bg-surface-page border border-border p-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Paso 01</p>
+          <h3 class="mt-1 text-base font-bold text-navy-900">Militancia Nivel 4</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">Ingreso digital con carnet <code>PU-N4</code> e inicio del reloj oficial en el sistema.</p>
+        </li>
+        <li class="rounded-xl bg-surface-page border border-border p-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Paso 02</p>
+          <h3 class="mt-1 text-base font-bold text-navy-900">6 Meses de Estudio</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">Bloqueo temporal estricto en servidor: lecturas doctrinales y entregas continuas.</p>
+        </li>
+        <li class="rounded-xl bg-surface-page border border-border p-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Paso 03</p>
+          <h3 class="mt-1 text-base font-bold text-navy-900">Filtro Oral y Antecedentes</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">Evaluación sincrónica ante docentes N1/N2 más verificación penal/judicial/policial.</p>
+        </li>
+        <li class="rounded-xl bg-navy-900 text-white border-2 border-gold-400 p-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-gold-300">Paso 04</p>
+          <h3 class="mt-1 text-base font-bold text-white">Certificado Nivel 3</h3>
+          <p class="mt-1.5 text-sm text-slate-200">Firma Ed25519 habilitante para integrar la Asamblea Dirigencial y postular.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="rounded-2xl bg-civic-grid text-white p-6 sm:p-8 border-2 border-gold-400 space-y-4 shadow-lg" aria-labelledby="campus-roadmap-heading">
+      <h2 id="campus-roadmap-heading" class="text-2xl font-bold text-white">
         Hoja de Ruta Digital del Campus (Fases 2 y 3)
       </h2>
       <p class="text-sm sm:text-base text-slate-200 leading-relaxed max-w-3xl">
         En la Fase 1 el material de estudio se publica abiertamente en la Biblioteca Doctrinal. En las Fases 2 y 3 se desplegará el Campus Digital con seguimiento estricto de los 6 meses en servidor y un <strong>modelo híbrido anti-fraude</strong>: el software certifica la trazabilidad temporal y entregas, pero el ascenso definitivo a <strong>Nivel 3</strong> exigirá <strong>evaluación oral/sincrónica ante docentes de Nivel 1 y Nivel 2</strong> y <strong>verificación de antecedentes</strong> antes de emitir el Certificado Ed25519.
       </p>
       <div class="pt-2 flex flex-wrap gap-3">
-        <a href={withBase('/biblioteca/')} class="btn rounded-lg bg-gold-400 text-navy-950 font-extrabold px-5 py-2.5 text-sm hover:bg-gold-300">
-          Consultar Biblioteca de Estudio
+        <a href={withBase('/biblioteca/')} class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 font-bold px-5 py-2.5 text-sm hover:bg-gold-300">
+          <Icon name="book" class="w-4 h-4" />
+          <span>Consultar Biblioteca de Estudio</span>
         </a>
-        <a href={withBase('/militancia/')} class="btn rounded-lg bg-navy-800 border border-gold-400 text-white font-bold px-5 py-2.5 text-sm hover:bg-navy-700">
-          Verificadores y Nivel 4
+        <a href={withBase('/militancia/')} class="btn inline-flex items-center gap-2 rounded-lg bg-navy-800 border border-gold-400 text-white font-bold px-5 py-2.5 text-sm hover:bg-navy-700">
+          <Icon name="qr" class="w-4 h-4 text-gold-300" />
+          <span>Verificadores y Nivel 4</span>
         </a>
       </div>
     </section>

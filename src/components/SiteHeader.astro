@@ -1,4 +1,5 @@
 ---
+import EmblemaSvg from './EmblemaSvg.astro';
 import { withBase } from '../lib/url';
 
 const navItems = [
@@ -24,7 +25,7 @@ const currentPath = Astro.url.pathname;
 <header class="site-header" data-site-header>
   <div class="header-inner">
     <a class="site-logo" href={withBase('/')}>
-      <span class="site-logo-mark" aria-hidden="true">PU</span>
+      <EmblemaSvg class="w-10 h-10 shrink-0" decorative={true} />
       <span class="site-logo-text">
         <span class="site-logo-title">Partido Plus Ultra</span>
         <span class="site-logo-sub">Transparencia Abierta · Perú</span>

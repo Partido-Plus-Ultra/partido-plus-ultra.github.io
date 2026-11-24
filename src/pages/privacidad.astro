@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { withBase } from '../lib/url';
 ---
 
@@ -8,9 +9,12 @@ import { withBase } from '../lib/url';
   description="Política de privacidad, cero rastreo en Fase 1 y compromisos bajo la Ley N.° 29733 (ANPD) del Partido Plus Ultra."
 >
   <div class="max-w-4xl mx-auto px-4 py-10 space-y-10">
-    <header class="border-b border-border pb-6 space-y-3">
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Cumplimiento Legal y Protección Ciudadana</p>
-      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+    <header class="rounded-2xl bg-white border border-border border-t-4 border-t-gold-400 p-6 sm:p-8 shadow-sm space-y-3">
+      <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-700">
+        <Icon name="lock" class="w-4 h-4" />
+        <span>Cumplimiento Legal y Protección Ciudadana</span>
+      </p>
+      <h1 id="contenido-principal" tabindex="-1" class="font-bold text-navy-900">
         Política de Privacidad y Protección de Datos Personales
       </h1>
       <p class="text-base text-ink-muted">
@@ -18,19 +22,19 @@ import { withBase } from '../lib/url';
       </p>
     </header>
 
-    <section aria-labelledby="fase1-privacidad-heading" class="space-y-3">
-      <h2 id="fase1-privacidad-heading" class="text-2xl font-extrabold text-navy-900">
+    <section aria-labelledby="fase1-privacidad-heading" class="rounded-2xl bg-white border border-border p-6 sm:p-8 shadow-sm space-y-3">
+      <h2 id="fase1-privacidad-heading" class="text-2xl font-bold text-navy-900">
         1. Estado Real en Fase 1 (Cero Rastreo y Cero Datos Personales)
       </h2>
       <ul class="list-disc pl-6 space-y-2 text-ink">
-        <li><strong>Cero cookies de rastreo o publicidad:</strong> Este portal estático no instala cookies analíticas ni scripts de seguimiento de terceros.</li>
+        <li><strong>Cero cookies de rastreo o publicidad:</strong> Este portal estático no instala cookies analíticas ni scripts de seguimiento de terceros; incluso las tipografías están auto-alojadas sin peticiones externas.</li>
         <li><strong>Cero datos personales (PII) en GitHub:</strong> No recopilamos nombres, números de DNI, teléfonos, direcciones IP ni correos electrónicos de visitantes o simpatizantes en este repositorio público.</li>
         <li><strong>Verificación 100% local en tu navegador:</strong> El Verificador Oficial de Carnets evalúa firmas Ed25519 localmente en tu dispositivo mediante Web Crypto API; si usas un enlace QR con <code>#token=...</code>, el fragmento posterior a <code>#</code> nunca se envía a servidores ni registros HTTP.</li>
       </ul>
     </section>
 
-    <section aria-labelledby="ley-29733-heading" class="space-y-3">
-      <h2 id="ley-29733-heading" class="text-2xl font-extrabold text-navy-900">
+    <section aria-labelledby="ley-29733-heading" class="rounded-2xl bg-white border border-border p-6 sm:p-8 shadow-sm space-y-3">
+      <h2 id="ley-29733-heading" class="text-2xl font-bold text-navy-900">
         2. Marco Legal Peruano: Ley N.° 29733 (ANPD) vs. Transparencia (ONPE / JNE)
       </h2>
       <p class="text-ink leading-relaxed">
@@ -41,8 +45,8 @@ import { withBase } from '../lib/url';
       </p>
     </section>
 
-    <section aria-labelledby="compromisos-fase2-heading" class="space-y-3">
-      <h2 id="compromisos-fase2-heading" class="text-2xl font-extrabold text-navy-900">
+    <section aria-labelledby="compromisos-fase2-heading" class="rounded-2xl bg-white border border-border p-6 sm:p-8 shadow-sm space-y-3">
+      <h2 id="compromisos-fase2-heading" class="text-2xl font-bold text-navy-900">
         3. Compromisos Obligatorios Antes de Habilitar la Fase 2
       </h2>
       <ul class="list-disc pl-6 space-y-2 text-ink">
@@ -51,8 +55,9 @@ import { withBase } from '../lib/url';
         <li><strong>Respaldos cifrados bajo custodia física del Nivel 2:</strong> Ningún registro orgánico dependerá exclusivamente de un proveedor gratuito externo sin copias de seguridad cifradas en poder del Poder Constitucional.</li>
       </ul>
       <div class="pt-3">
-        <a href={withBase('/biblioteca/arquitectura-fase-2-seguridad/')} class="font-bold text-navy-900 underline underline-offset-4">
-          Leer la Especificación Técnica y de Seguridad de Fase 2 →
+        <a href={withBase('/biblioteca/arquitectura-fase-2-seguridad/')} class="inline-flex items-center gap-1.5 font-bold text-navy-900 underline underline-offset-4">
+          <span>Leer la Especificación Técnica y de Seguridad de Fase 2</span>
+          <Icon name="arrow-right" class="w-4 h-4" />
         </a>
       </div>
     </section>

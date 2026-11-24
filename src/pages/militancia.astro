@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import VerificadorCarnet from '../components/VerificadorCarnet.astro';
+import CarnetPreview from '../components/CarnetPreview.astro';
 import AccordionFaq from '../components/AccordionFaq.astro';
+import Icon from '../components/Icon.astro';
 import { withBase } from '../lib/url';
 
 const faqItems = [
@@ -18,7 +20,7 @@ const faqItems = [
   {
     pregunta: '¿Cuándo se activará la emisión en línea de carnets oficiales?',
     respuesta:
-      'Actualmente estamos en Fase 1 (Portal de Transparencia estático en GitHub Pages). Para proteger la privacidad real de los inscritos, la emisión oficial se activará en Fase 2 sobre un backend gratuito aislado (Cloudflare Workers + D1 o Supabase Free), evitando emitir falsos carnets simulados en esta etapa.',
+      'Actualmente estamos en Fase 1 (Portal de Transparencia estático en GitHub Pages). Para proteger la privacidad real de los inscritos, la emisión oficial se activará en Fase 2 sobre un backend gratuito aislado (Cloudflare Workers + D1 + Turnstile), evitando emitir falsos carnets simulados en esta etapa.',
   },
   {
     pregunta: '¿Cómo se relaciona el carnet anónimo con el registro legal ante el JNE / ROP?',
@@ -30,12 +32,15 @@ const faqItems = [
 
 <BaseLayout
   title="Militancia y Verificador"
-  description="Reglas de la Militancia Operativa Nivel 4, transición al Nivel 3 y verificador criptográfico Ed25519 de carnets del Partido Plus Ultra."
+  description="Reglas de la Militancia Operativa Nivel 4, maqueta con QR real escaneable y verificador criptográfico Ed25519 del Partido Plus Ultra."
 >
   <div class="max-w-7xl mx-auto px-4 py-10 space-y-12">
-    <header class="space-y-3 border-b border-border pb-6">
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Participación Ciudadana</p>
-      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+    <header class="border-b border-border pb-6 space-y-3">
+      <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-700">
+        <Icon name="qr" class="w-4 h-4" />
+        <span>Participación Ciudadana</span>
+      </p>
+      <h1 id="contenido-principal" tabindex="-1" class="font-bold text-navy-900">
         Militancia Operativa (Nivel 4) y Verificador Oficial
       </h1>
       <p class="text-base text-ink-muted max-w-3xl">
@@ -43,40 +48,55 @@ const faqItems = [
       </p>
     </header>
 
-    <!-- Comparativa Nivel 4 vs Nivel 3 -->
-    <section aria-labelledby="niveles-comparativa-heading" class="grid gap-6 md:grid-cols-2">
-      <h2 id="niveles-comparativa-heading" class="visually-hidden">Comparativa entre Nivel 4 y Nivel 3</h2>
-      <article class="rounded-2xl border border-border bg-surface-muted p-6">
-        <span class="inline-block rounded bg-navy-900 text-gold-300 text-xs font-bold px-2.5 py-1 uppercase">Nivel 4 · Los Comprometidos</span>
-        <h3 class="mt-3 text-xl font-extrabold text-navy-900">Militancia Operativa con Carnet Digital</h3>
-        <ul class="mt-3 list-disc pl-5 space-y-2 text-sm text-ink">
-          <li>Registro digital anónimo en Fase 2 con emisión de carnet <code>PU-N4</code>.</li>
-          <li>Colaboración en campañas, recolección de firmas y trabajo territorial.</li>
-          <li>Permanencia voluntaria indefinida: sin obligación de postular a cargos públicos.</li>
-        </ul>
-      </article>
+    <!-- Comparativa + Maqueta Carnet con QR real -->
+    <section aria-labelledby="niveles-comparativa-heading" class="grid gap-6 lg:grid-cols-12 items-start">
+      <h2 id="niveles-comparativa-heading" class="visually-hidden">Comparativa entre Nivel 4, Nivel 3 y Carnet Digital</h2>
 
-      <article class="rounded-2xl border-2 border-gold-400 bg-navy-900 text-white p-6">
-        <span class="inline-block rounded bg-gold-400 text-navy-950 text-xs font-bold px-2.5 py-1 uppercase">Nivel 3 · La Asamblea / Cantera</span>
-        <h3 class="mt-3 text-xl font-extrabold text-white">Cuerpo Pleno del Partido y Candidatos</h3>
-        <ul class="mt-3 list-disc pl-5 space-y-2 text-sm text-slate-200">
-          <li>Requiere aprobar obligatoriamente la Escuela Política (mínimo 6 meses, sin atajos).</li>
-          <li>Certificación emitida por docentes de Nivel 1 y Nivel 2.</li>
-          <li>Única cantera autorizada para postular a Presidencia, Congreso, Alcaldías y Ministerios.</li>
-        </ul>
-        <a href={withBase('/escuela-politica/')} class="mt-4 inline-block text-sm font-bold text-gold-300 underline underline-offset-4">
-          Ver requisitos de la Escuela Política →
-        </a>
-      </article>
+      <div class="lg:col-span-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+        <article class="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <span class="inline-flex items-center gap-1.5 rounded bg-navy-900 text-gold-300 text-xs font-bold px-2.5 py-1 uppercase">
+            <Icon name="spark" class="w-3.5 h-3.5" />
+            <span>Nivel 4 · Los Comprometidos</span>
+          </span>
+          <h3 class="mt-3 text-xl font-bold text-navy-900">Militancia Operativa con Carnet Digital</h3>
+          <ul class="mt-3 list-disc pl-5 space-y-2 text-sm text-ink">
+            <li>Registro digital anónimo en Fase 2 con emisión de carnet <code>PU-N4</code>.</li>
+            <li>Colaboración en campañas, recolección de firmas y trabajo territorial.</li>
+            <li>Permanencia voluntaria indefinida: sin obligación de postular a cargos públicos.</li>
+          </ul>
+        </article>
+
+        <article class="rounded-2xl border-2 border-gold-400 bg-navy-900 text-white p-6 shadow-md">
+          <span class="inline-flex items-center gap-1.5 rounded bg-gold-400 text-navy-950 text-xs font-bold px-2.5 py-1 uppercase">
+            <Icon name="columns" class="w-3.5 h-3.5" />
+            <span>Nivel 3 · La Asamblea / Cantera</span>
+          </span>
+          <h3 class="mt-3 text-xl font-bold text-white">Cuerpo Pleno del Partido y Candidatos</h3>
+          <ul class="mt-3 list-disc pl-5 space-y-2 text-sm text-slate-200">
+            <li>Requiere aprobar obligatoriamente la Escuela Política (mínimo 6 meses, sin atajos).</li>
+            <li>Certificación emitida tras evaluación ante docentes de Nivel 1 y Nivel 2.</li>
+            <li>Única cantera autorizada para postular a Presidencia, Congreso, Alcaldías y Ministerios.</li>
+          </ul>
+          <a href={withBase('/escuela-politica/')} class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-gold-300 underline underline-offset-4">
+            <span>Ver requisitos de la Escuela Política</span>
+            <Icon name="arrow-right" class="w-4 h-4" />
+          </a>
+        </article>
+      </div>
+
+      <div class="lg:col-span-5">
+        <CarnetPreview />
+      </div>
     </section>
 
-    <!-- Aviso honesto Fase 1 vs Fase 2 -->
-    <section class="rounded-xl border border-amber-600 bg-amber-50 text-amber-950 p-5" aria-labelledby="estado-registro-heading">
-      <h2 id="estado-registro-heading" class="text-base font-extrabold">
-        Estado Transparente de Inscripción Digital (Fase 1)
+    <!-- Aviso Fase 1 armonizado a la paleta institucional -->
+    <section class="rounded-xl border-s-4 border-gold-400 bg-white border border-border p-5 shadow-sm" aria-labelledby="estado-registro-heading">
+      <h2 id="estado-registro-heading" class="text-base font-bold text-navy-900 flex items-center gap-2">
+        <Icon name="lock" class="w-4 h-4 text-gold-700" />
+        <span>Estado Transparente de Inscripción Digital (Fase 1)</span>
       </h2>
-      <p class="mt-1 text-sm leading-relaxed">
-        Este portal opera actualmente de forma 100% estática en GitHub Pages para garantizar costo cero y auditoría pública. Para evitar falsos carnets locales sin validez real, el formulario de registro anónimo se habilitará en la <strong>Fase 2</strong> (servidor gratuito aislado). Mientras tanto, ya puedes auditar y probar abajo el <strong>Verificador Oficial Ed25519</strong>.
+      <p class="mt-1.5 text-sm text-ink leading-relaxed">
+        Este portal opera actualmente de forma 100% estática en GitHub Pages para garantizar costo cero y auditoría pública. Para evitar falsos carnets locales sin validez real, el formulario de registro anónimo se habilitará en la <strong>Fase 2</strong> (Cloudflare Workers + D1 + Turnstile). Mientras tanto, ya puedes probar abajo el <strong>Verificador Oficial Ed25519</strong> o escanear el QR de muestra.
       </p>
     </section>
 

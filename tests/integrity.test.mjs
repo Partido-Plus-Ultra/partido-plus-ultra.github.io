@@ -122,7 +122,7 @@ test('verificador criptográfico Ed25519 valida kid, rechaza alterados, kid desc
   assert.equal(revokedRes.status, 'revoked');
 });
 
-test('política de soberanía CI/CD, privacidad y documentación obligatoria', () => {
+test('política de soberanía CI/CD, privacidad, cero CDNs externos y activos visuales', () => {
   assert.equal(
     fs.existsSync(path.join(rootDir, '.github', 'workflows')),
     false,
@@ -138,4 +138,22 @@ test('política de soberanía CI/CD, privacidad y documentación obligatoria', (
     fs.existsSync(path.join(rootDir, 'src', 'content', 'documentos', 'arquitectura-fase-2-seguridad.md')),
     true
   );
+
+  assert.equal(fs.existsSync(path.join(rootDir, 'public', 'img', 'og-whatsapp-1200x630.jpg')), true);
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'assets', 'img', 'hero-amanecer-civico.webp')), true);
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'assets', 'img', 'visual-transparencia.webp')), true);
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'components', 'EscuelaIlustracionSvg.astro')), true);
+
+  // Garantizar cero llamadas a fuentes externas de Google en src/
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (/\.(astro|ts|js|css|md)$/i.test(entry.name)) {
+        const text = fs.readFileSync(full, 'utf8');
+        assert.doesNotMatch(text, /fonts\.googleapis\.com|fonts\.gstatic\.com/i, `Fuente externa prohibida en ${full}`);
+      }
+    }
+  };
+  walk(path.join(rootDir, 'src'));
 });

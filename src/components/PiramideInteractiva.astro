@@ -1,19 +1,23 @@
 ---
 import organigrama from '../data/organigrama.json';
+import Icon from './Icon.astro';
 
 const poderPorId = new Map(organigrama.poderes.map((p) => [p.id, p]));
 ---
 
-<section class="bg-navy-950 text-white rounded-2xl p-6 sm:p-8 border-2 border-gold-400 shadow-lg" aria-labelledby="piramide-heading">
-  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-navy-700 pb-5">
+<section class="bg-civic-grid text-white rounded-2xl p-6 sm:p-8 lg:p-10 border-2 border-gold-400 shadow-xl" aria-labelledby="piramide-heading">
+  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-navy-700 pb-6">
     <div>
-      <p class="text-xs font-bold uppercase tracking-widest text-gold-300">Mapa Orgánico Interactivo</p>
-      <h2 id="piramide-heading" class="mt-1 text-2xl sm:text-3xl font-extrabold text-white">
+      <p class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-300">
+        <Icon name="columns" class="w-4 h-4" />
+        <span>Arquitectura Escalonada del Poder</span>
+      </p>
+      <h2 id="piramide-heading" class="mt-1.5 text-2xl sm:text-3xl font-bold text-white">
         Los Tres Poderes y Cinco Niveles
       </h2>
     </div>
-    <div class="flex flex-wrap gap-3 text-xs">
-      <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-800 border border-gold-400/60 px-3 py-1.5 text-gold-300 font-semibold">
+    <div class="flex flex-wrap gap-2.5 text-xs">
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-800 border border-gold-400/70 px-3 py-1.5 text-gold-300 font-semibold">
         <span aria-hidden="true">↑</span> {organigrama.partido.ejesGobernanza.ascendente}
       </span>
       <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-800 border border-slate-500 px-3 py-1.5 text-slate-200 font-semibold">
@@ -22,55 +26,104 @@ const poderPorId = new Map(organigrama.poderes.map((p) => [p.id, p]));
     </div>
   </div>
 
-  <ol class="mt-6 space-y-4">
-    {organigrama.niveles.map((nivel) => {
-      const poder = nivel.poderId ? poderPorId.get(nivel.poderId) : null;
-      return (
-        <li class="rounded-xl bg-navy-900/90 border border-navy-700 hover:border-gold-400 transition-colors p-5">
-          <div class="grid gap-4 lg:grid-cols-12 lg:items-start">
-            <div class="lg:col-span-4 flex flex-col gap-1.5">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-block rounded-md bg-gold-400 text-navy-950 font-extrabold text-xs px-2.5 py-1 uppercase tracking-wide">
-                  Nivel {nivel.nivel}
-                </span>
-                {poder ? (
-                  <span class="inline-block rounded-md bg-navy-800 border border-gold-400/50 text-gold-300 font-semibold text-xs px-2.5 py-1">
-                    {poder.nombre} ({poder.subtitulo})
-                  </span>
-                ) : (
-                  <span class="inline-block rounded-md bg-navy-800 border border-slate-600 text-slate-300 font-semibold text-xs px-2.5 py-1">
-                    Base Orgánica y Social
-                  </span>
-                )}
-              </div>
-              <h3 class="text-lg font-bold text-white mt-1">
-                {nivel.nombre} — <span class="text-gold-300">{nivel.etiqueta}</span>
-              </h3>
-              <div class="mt-1 flex flex-wrap gap-2 text-xs">
-                <span class={nivel.puedePostular
-                  ? 'rounded px-2 py-0.5 bg-emerald-950 text-emerald-200 border border-emerald-600 font-semibold'
-                  : 'rounded px-2 py-0.5 bg-amber-950 text-amber-200 border border-amber-600 font-semibold'}>
-                  {nivel.puedePostular ? 'Única cantera electoral' : 'No postula a cargos'}
-                </span>
-                <span class={nivel.puedeTenerEmpresas
-                  ? 'rounded px-2 py-0.5 bg-slate-800 text-slate-200 border border-slate-600 font-semibold'
-                  : 'rounded px-2 py-0.5 bg-rose-950 text-rose-200 border border-rose-600 font-semibold'}>
-                  {nivel.puedeTenerEmpresas ? 'Compatible con actividad privada' : 'Prohibido tener empresas'}
-                </span>
-              </div>
-            </div>
+  <div class="mt-8 grid lg:grid-cols-12 gap-5 items-stretch">
+    <!-- Eje Izquierdo (solo desktop) -->
+    <div class="hidden lg:flex lg:col-span-1 flex-col items-center justify-between py-6 px-2 rounded-xl bg-navy-950/70 border border-gold-400/40 text-gold-300" aria-hidden="true">
+      <span class="text-lg font-bold">↑</span>
+      <span class="text-[11px] font-bold uppercase tracking-widest text-center [writing-mode:vertical-rl] rotate-180">
+        {organigrama.partido.ejesGobernanza.ascendente}
+      </span>
+      <span class="text-lg font-bold">↑</span>
+    </div>
 
-            <div class="lg:col-span-8 space-y-2 text-sm text-slate-200">
-              <p class="font-medium text-white">{nivel.composicion}</p>
-              <ul class="list-disc pl-5 space-y-1 text-slate-300">
-                {nivel.reglas.map((regla) => (
-                  <li>{regla}</li>
-                ))}
-              </ul>
+    <!-- Pirámide Escalonada -->
+    <ol class="lg:col-span-10 space-y-4">
+      {organigrama.niveles.map((nivel) => {
+        const poder = nivel.poderId ? poderPorId.get(nivel.poderId) : null;
+        const isTop = nivel.nivel <= 2;
+        return (
+          <li
+            class:list={[
+              `pyramid-tier-${nivel.nivel}`,
+              'rounded-xl p-5 sm:p-6 transition-colors border',
+              isTop
+                ? 'bg-navy-950/90 border-gold-400/80 shadow-md'
+                : 'bg-navy-900/90 border-navy-700 hover:border-gold-400/70',
+            ]}
+          >
+            <div class="grid gap-4 md:grid-cols-12 md:items-start">
+              <div class="md:col-span-5 flex flex-col gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="inline-flex items-center gap-1 rounded-md bg-gold-400 text-navy-950 font-extrabold text-xs px-2.5 py-1 uppercase tracking-wide">
+                    <Icon name={nivel.nivel === 1 ? 'shield' : nivel.nivel === 2 ? 'scale' : nivel.nivel === 3 ? 'columns' : 'spark'} class="w-3.5 h-3.5" />
+                    <span>Nivel {nivel.nivel}</span>
+                  </span>
+                  {poder ? (
+                    <span class="inline-block rounded-md bg-navy-800 border border-gold-400/50 text-gold-300 font-semibold text-xs px-2.5 py-1">
+                      {poder.nombre} · {poder.subtitulo}
+                    </span>
+                  ) : (
+                    <span class="inline-block rounded-md bg-navy-800 border border-slate-600 text-slate-300 font-semibold text-xs px-2.5 py-1">
+                      Base Orgánica y Social
+                    </span>
+                  )}
+                </div>
+
+                <h3 class="text-lg sm:text-xl font-bold text-white mt-0.5">
+                  {nivel.nombre}
+                </h3>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gold-300">
+                  {nivel.etiqueta}
+                </p>
+
+                <div class="mt-1 flex flex-wrap gap-2 text-xs">
+                  <span
+                    class:list={[
+                      'inline-flex items-center gap-1 rounded px-2.5 py-1 font-semibold border',
+                      nivel.puedePostular
+                        ? 'bg-emerald-950 text-emerald-200 border-emerald-500'
+                        : 'bg-amber-950 text-amber-200 border-amber-500',
+                    ]}
+                  >
+                    <Icon name={nivel.puedePostular ? 'check' : 'lock'} class="w-3.5 h-3.5" />
+                    <span>{nivel.puedePostular ? 'Única cantera electoral' : 'No postula a cargos'}</span>
+                  </span>
+
+                  <span
+                    class:list={[
+                      'inline-flex items-center gap-1 rounded px-2.5 py-1 font-semibold border',
+                      nivel.puedeTenerEmpresas
+                        ? 'bg-slate-800 text-slate-200 border-slate-500'
+                        : 'bg-rose-950 text-rose-200 border-rose-500',
+                    ]}
+                  >
+                    <Icon name={nivel.puedeTenerEmpresas ? 'check' : 'x'} class="w-3.5 h-3.5" />
+                    <span>{nivel.puedeTenerEmpresas ? 'Compatible con actividad privada' : 'Prohibido tener empresas'}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="md:col-span-7 space-y-2.5 text-sm text-slate-200 border-t md:border-t-0 md:border-s border-navy-700 pt-3 md:pt-0 md:ps-5">
+                <p class="font-medium text-white leading-relaxed">{nivel.composicion}</p>
+                <ul class="list-disc pl-5 space-y-1 text-slate-300">
+                  {nivel.reglas.map((regla) => (
+                    <li>{regla}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        </li>
-      );
-    })}
-  </ol>
+          </li>
+        );
+      })}
+    </ol>
+
+    <!-- Eje Derecho (solo desktop) -->
+    <div class="hidden lg:flex lg:col-span-1 flex-col items-center justify-between py-6 px-2 rounded-xl bg-navy-950/70 border border-slate-600/70 text-slate-200" aria-hidden="true">
+      <span class="text-lg font-bold">↓</span>
+      <span class="text-[11px] font-bold uppercase tracking-widest text-center [writing-mode:vertical-rl]">
+        {organigrama.partido.ejesGobernanza.descendente}
+      </span>
+      <span class="text-lg font-bold">↓</span>
+    </div>
+  </div>
 </section>

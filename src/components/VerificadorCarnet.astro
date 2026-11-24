@@ -1,26 +1,28 @@
 ---
 import revocaciones from '../data/revocaciones.json';
 import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
+import Icon from './Icon.astro';
 ---
 
 <section
   id="verificador-carnet"
   data-demo-token={DEMO_SAMPLE_TOKEN}
   data-revocados={JSON.stringify(revocaciones.revocados)}
-  class="rounded-2xl border-2 border-navy-900 bg-surface p-6 sm:p-8 shadow-sm"
+  class="rounded-2xl border-2 border-navy-900 bg-white p-6 sm:p-8 shadow-md"
   aria-labelledby="verificador-heading"
 >
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
     <div>
-      <span class="inline-block rounded bg-navy-900 text-gold-300 text-xs font-bold uppercase tracking-wider px-2.5 py-1">
-        Criptografía Ed25519 · Rotación kid · Soporte QR (#token=)
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-900 text-gold-300 text-xs font-bold uppercase tracking-wider px-3 py-1">
+        <Icon name="key" class="w-3.5 h-3.5" />
+        <span>Criptografía Ed25519 · Rotación kid · Soporte QR (#token=)</span>
       </span>
-      <h2 id="verificador-heading" class="mt-2 text-2xl font-extrabold text-navy-900">
+      <h2 id="verificador-heading" class="mt-2.5 text-2xl font-bold text-navy-900">
         Verificador Oficial de Carnets y Certificados
       </h2>
     </div>
     <p class="text-xs text-ink-muted">
-      Lista de revocaciones actualizada: <time datetime={revocaciones.ultimaActualizacion}>{revocaciones.ultimaActualizacion}</time>
+      Lista de revocaciones: <time datetime={revocaciones.ultimaActualizacion}>{revocaciones.ultimaActualizacion}</time>
     </p>
   </div>
 
@@ -44,44 +46,48 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
         aria-describedby="token-ayuda"
         placeholder="PU1.eyJpZCI6IlBVLU40L..."
         required
-        class="mt-2 w-full rounded-lg border border-border bg-surface-muted p-3 font-mono text-xs sm:text-sm text-ink"
+        class="mt-2 w-full rounded-lg border border-ink-muted/60 bg-surface-page p-3 font-mono text-xs sm:text-sm text-ink"
       ></textarea>
     </div>
 
     <div class="flex flex-wrap gap-3">
       <button
         type="submit"
-        class="btn rounded-lg bg-navy-900 text-white px-5 py-2.5 text-sm font-bold hover:bg-navy-800 cursor-pointer"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-5 py-2.5 text-sm font-bold hover:bg-navy-800 cursor-pointer"
       >
-        Verificar firma Ed25519
+        <Icon name="shield" class="w-4 h-4 text-gold-300" />
+        <span>Verificar firma Ed25519</span>
       </button>
       <button
         type="button"
         id="btn-cargar-demo"
-        class="btn rounded-lg bg-gold-400 text-navy-950 px-4 py-2.5 text-sm font-bold hover:bg-gold-300 cursor-pointer"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-4 py-2.5 text-sm font-bold hover:bg-gold-300 cursor-pointer"
       >
-        Cargar credencial DEMO válida
+        <Icon name="check" class="w-4 h-4" />
+        <span>Cargar credencial DEMO válida</span>
       </button>
       <button
         type="button"
         id="btn-cargar-alterada"
-        class="btn rounded-lg bg-white text-navy-900 border border-border px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-surface-page text-navy-900 border border-ink-muted/60 px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
       >
-        Probar credencial alterada
+        <Icon name="x" class="w-4 h-4 text-rose-700" />
+        <span>Probar credencial alterada</span>
       </button>
       <button
         type="button"
         id="btn-copiar-qr"
-        class="btn rounded-lg bg-white text-navy-900 border border-border px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
+        class="btn inline-flex items-center gap-2 rounded-lg bg-surface-page text-navy-900 border border-ink-muted/60 px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
       >
-        Copiar enlace QR DEMO
+        <Icon name="qr" class="w-4 h-4" />
+        <span>Copiar enlace QR DEMO</span>
       </button>
     </div>
   </form>
 
   <div
     id="resultado-verificador"
-    class="mt-5 rounded-xl border border-border bg-surface-muted p-4 text-sm"
+    class="mt-5 rounded-xl border border-border bg-surface-page p-4 text-sm"
     aria-live="polite"
   >
     Ingresa una credencial y pulsa <strong>Verificar firma Ed25519</strong>.
@@ -135,7 +141,7 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
     resultadoEl.className = 'mt-5 rounded-xl border p-4 text-sm';
 
     if (result.status === 'valid') {
-      resultadoEl.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950');
+      resultadoEl.classList.add('border-emerald-700', 'bg-emerald-50', 'text-emerald-950');
       const nivelDesc =
         result.payload.nivel === 3
           ? 'Nivel 3 — Asamblea Dirigencial / Cantera (Escuela Política Certificada)'
@@ -143,13 +149,13 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
 
       resultadoEl.innerHTML = '';
       const title = document.createElement('p');
-      title.className = 'font-extrabold text-base';
+      title.className = 'font-bold text-base';
       title.textContent = result.isDemo
-        ? 'FIRMA ED25519 VÁLIDA (CREDENCIAL DE DEMOSTRACIÓN)'
-        : 'CREDENCIAL OFICIAL AUTÉNTICA Y VIGENTE';
+        ? '✓ FIRMA ED25519 VÁLIDA (CREDENCIAL DE DEMOSTRACIÓN)'
+        : '✓ CREDENCIAL OFICIAL AUTÉNTICA Y VIGENTE';
 
       const list = document.createElement('dl');
-      list.className = 'mt-2 grid gap-1 sm:grid-cols-2 text-xs sm:text-sm';
+      list.className = 'mt-2.5 grid gap-1.5 sm:grid-cols-2 text-xs sm:text-sm';
       const rows: [string, string][] = [
         ['Identificador', result.payload.id],
         ['Clave de firma (kid)', result.payload.kid],
@@ -170,19 +176,19 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
     }
 
     if (result.status === 'revoked') {
-      resultadoEl.classList.add('border-amber-600', 'bg-amber-50', 'text-amber-950');
-      resultadoEl.textContent = `CREDENCIAL REVOCADA (${result.payload.id}): ${result.reason}`;
+      resultadoEl.classList.add('border-amber-700', 'bg-amber-50', 'text-amber-950');
+      resultadoEl.textContent = `⚠ CREDENCIAL REVOCADA (${result.payload.id}): ${result.reason}`;
       return;
     }
 
     if (result.status === 'unsupported') {
-      resultadoEl.classList.add('border-amber-600', 'bg-amber-50', 'text-amber-950');
-      resultadoEl.textContent = result.message;
+      resultadoEl.classList.add('border-amber-700', 'bg-amber-50', 'text-amber-950');
+      resultadoEl.textContent = `⚠ ${result.message}`;
       return;
     }
 
     resultadoEl.classList.add('border-rose-700', 'bg-rose-50', 'text-rose-950');
-    resultadoEl.textContent = `CREDENCIAL INVÁLIDA: ${result.reason}`;
+    resultadoEl.textContent = `✕ CREDENCIAL INVÁLIDA: ${result.reason}`;
   }
 
   form?.addEventListener('submit', (e) => {
@@ -208,11 +214,11 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
   btnCopiarQr?.addEventListener('click', async () => {
     const qrUrl = `${window.location.origin}${window.location.pathname}#token=${encodeURIComponent(demoToken)}`;
     if (!resultadoEl) return;
-    resultadoEl.className = 'mt-5 rounded-xl border border-navy-900 bg-surface-muted p-4 text-sm text-navy-900';
+    resultadoEl.className = 'mt-5 rounded-xl border border-navy-900 bg-surface-page p-4 text-sm text-navy-900';
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(qrUrl);
-        resultadoEl.textContent = `Enlace QR DEMO copiado al portapapeles (con fragmento privado #token=).`;
+        resultadoEl.textContent = '✓ Enlace QR DEMO copiado al portapapeles (con fragmento privado #token=).';
       } else {
         resultadoEl.textContent = `Enlace QR DEMO generado: ${qrUrl}`;
       }

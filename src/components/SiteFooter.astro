@@ -1,16 +1,23 @@
 ---
+import EmblemaSvg from './EmblemaSvg.astro';
 import { REPO_URL, withBase } from '../lib/url';
 ---
 
 <footer class="bg-navy-950 text-slate-200 border-t-2 border-gold-400 mt-16">
   <div class="max-w-7xl mx-auto px-4 py-12 grid gap-8 md:grid-cols-3">
-    <div>
-      <p class="font-serif text-lg font-bold text-gold-300">Partido Plus Ultra (PU)</p>
-      <p class="mt-2 text-sm text-slate-300 leading-relaxed">
+    <div class="space-y-3">
+      <div class="flex items-center gap-3">
+        <EmblemaSvg class="w-11 h-11 shrink-0" decorative={true} />
+        <div>
+          <p class="font-serif text-lg font-bold text-gold-300">Partido Plus Ultra (PU)</p>
+          <p class="text-xs uppercase tracking-widest text-slate-400">Perú · Infraestructura Abierta</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-300 leading-relaxed">
         Infraestructura digital pública dedicada a la transparencia orgánica, doctrinal y financiera.
         Organización en tres poderes internos y cinco niveles escalonados.
       </p>
-      <p class="mt-3 text-xs text-slate-400">
+      <p class="text-xs text-slate-400">
         Alojamiento estático abierto a costo S/ 0.00 en GitHub Pages.
       </p>
     </div>
@@ -52,10 +59,10 @@ import { REPO_URL, withBase } from '../lib/url';
       </ul>
     </div>
   </div>
-  <div class="border-t border-navy-800 bg-navy-900/60">
+  <div class="border-t border-navy-800 bg-navy-900/70">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between text-xs text-slate-400">
       <span>Partido Plus Ultra · Perú · Infraestructura Abierta</span>
-      <span>Cero datos personales (PII) de militancia almacenados en este repositorio público.</span>
+      <span>Cero datos personales (PII) ni cookies de rastreo en este portal público.</span>
     </div>
   </div>
 </footer>
