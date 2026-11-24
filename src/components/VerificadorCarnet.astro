@@ -112,6 +112,7 @@ import Icon from './Icon.astro';
   const btnAlterada = document.getElementById('btn-cargar-alterada');
   const btnCopiarQr = document.getElementById('btn-copiar-qr');
   const resultadoEl = document.getElementById('resultado-verificador');
+  let verifySeq = 0;
 
   function extractTokenFromLocation(): string | null {
     const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
@@ -136,7 +137,9 @@ import Icon from './Icon.astro';
 
   async function runVerification() {
     if (!(textarea instanceof HTMLTextAreaElement) || !resultadoEl) return;
+    const seqId = ++verifySeq;
     const result = await verifyCarnetToken(textarea.value, revocadosList);
+    if (seqId !== verifySeq) return;
 
     resultadoEl.className = 'mt-5 rounded-xl border p-4 text-sm';
 
@@ -191,6 +194,17 @@ import Icon from './Icon.astro';
     resultadoEl.textContent = `✕ CREDENCIAL INVÁLIDA: ${result.reason}`;
   }
 
+  function applyLocationToken(shouldScroll = false) {
+    const urlToken = extractTokenFromLocation();
+    if (urlToken && textarea instanceof HTMLTextAreaElement) {
+      textarea.value = urlToken;
+      if (shouldScroll) {
+        container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      void runVerification();
+    }
+  }
+
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     void runVerification();
@@ -214,6 +228,7 @@ import Icon from './Icon.astro';
   btnCopiarQr?.addEventListener('click', async () => {
     const qrUrl = `${window.location.origin}${window.location.pathname}#token=${encodeURIComponent(demoToken)}`;
     if (!resultadoEl) return;
+    ++verifySeq;
     resultadoEl.className = 'mt-5 rounded-xl border border-navy-900 bg-surface-page p-4 text-sm text-navy-900';
     try {
       if (navigator.clipboard?.writeText) {
@@ -227,9 +242,6 @@ import Icon from './Icon.astro';
     }
   });
 
-  const urlToken = extractTokenFromLocation();
-  if (urlToken && textarea instanceof HTMLTextAreaElement) {
-    textarea.value = urlToken;
-    void runVerification();
-  }
+  window.addEventListener('hashchange', () => applyLocationToken(true));
+  applyLocationToken(false);
 </script>

@@ -1,3 +1,5 @@
+import { isValidIsoDate, normalizeSearchText } from './search.ts';
+
 export interface MovimientoTesoreria {
   id: string;
   fecha: string;
@@ -27,6 +29,12 @@ export interface ResumenTesoreria {
   porCategoria: Record<string, { ingresosCentimos: number; egresosCentimos: number }>;
 }
 
+export interface FiltroMovimientos {
+  tipo?: 'todos' | 'ingreso' | 'egreso';
+  categoria?: string;
+  query?: string;
+}
+
 export function formatearMoneda(centimos: number, simbolo = 'S/'): string {
   const signo = centimos < 0 ? '-' : '';
   const abs = Math.abs(centimos);
@@ -36,11 +44,27 @@ export function formatearMoneda(centimos: number, simbolo = 'S/'): string {
 }
 
 export function calcularResumen(libro: LibroTesoreria): ResumenTesoreria {
+  if (!Number.isInteger(libro.saldoInicialCentimos)) {
+    throw new Error('Saldo inicial inválido: debe ser entero en céntimos');
+  }
+  if (!isValidIsoDate(libro.ultimaActualizacion)) {
+    throw new Error(`Fecha de última actualización inválida: ${libro.ultimaActualizacion}`);
+  }
+
   let totalIngresosCentimos = 0;
   let totalEgresosCentimos = 0;
   const porCategoria: Record<string, { ingresosCentimos: number; egresosCentimos: number }> = {};
+  const seenIds = new Set<string>();
 
   for (const mov of libro.movimientos) {
+    if (!mov.id || seenIds.has(mov.id)) {
+      throw new Error(`Identificador de movimiento duplicado o vacío: ${mov.id}`);
+    }
+    seenIds.add(mov.id);
+
+    if (!isValidIsoDate(mov.fecha)) {
+      throw new Error(`Fecha inválida en movimiento ${mov.id}: ${mov.fecha}`);
+    }
     if (!Number.isInteger(mov.montoCentimos) || mov.montoCentimos < 0) {
       throw new Error(`Monto inválido en movimiento ${mov.id}: debe ser entero en céntimos >= 0`);
     }
@@ -66,6 +90,27 @@ export function calcularResumen(libro: LibroTesoreria): ResumenTesoreria {
     cantidadMovimientos: libro.movimientos.length,
     porCategoria,
   };
+}
+
+export function filtrarMovimientos(
+  movimientos: readonly MovimientoTesoreria[],
+  filtro: FiltroMovimientos
+): MovimientoTesoreria[] {
+  const tipo = filtro.tipo ?? 'todos';
+  const categoria = filtro.categoria ?? 'todas';
+  const q = normalizeSearchText(filtro.query ?? '');
+
+  return movimientos.filter((mov) => {
+    if (tipo !== 'todos' && mov.tipo !== tipo) return false;
+    if (categoria !== 'todas' && mov.categoria !== categoria) return false;
+    if (q) {
+      const hay = normalizeSearchText(
+        `${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
 }
 
 function sanitizeCsvCell(value: string): string {

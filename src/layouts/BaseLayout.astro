@@ -13,12 +13,14 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description,
   ogImage = '/img/og-whatsapp-1200x630.jpg',
+  noindex = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).toString();
@@ -33,7 +35,11 @@ const fullTitle = `${title} | Partido Plus Ultra`;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <link rel="canonical" href={canonicalUrl} />
+    )}
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
 
     <!-- Preload tipografías críticas auto-alojadas -->

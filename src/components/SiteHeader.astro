@@ -11,12 +11,17 @@ const navItems = [
   { label: 'Escuela Política', path: '/escuela-politica/' },
 ];
 
+function ensureTrailingSlash(value: string): string {
+  return value.endsWith('/') ? value : `${value}/`;
+}
+
 function isCurrentPath(itemPath: string, currentPath: string): boolean {
-  const target = withBase(itemPath);
+  const target = ensureTrailingSlash(withBase(itemPath));
+  const current = ensureTrailingSlash(currentPath);
   if (itemPath === '/') {
-    return currentPath === target || currentPath === target.replace(/\/$/, '');
+    return current === target;
   }
-  return currentPath.startsWith(target);
+  return current.startsWith(target);
 }
 
 const currentPath = Astro.url.pathname;
@@ -118,11 +123,12 @@ const currentPath = Astro.url.pathname;
     };
 
     updateLayout();
+    document.fonts?.ready?.then(() => updateLayout());
 
     const observer = new ResizeObserver((entries) => {
       const headerWidth = header.getBoundingClientRect().width;
       const isWide = header.classList.contains('is-wide');
-      const menuChanged = entries.some((entry) => entry.target === menu);
+      const menuChanged = isWide && entries.some((entry) => entry.target === menu);
 
       if (isWide || headerWidth > lastWidth || menuChanged) {
         lastWidth = headerWidth;

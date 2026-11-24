@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
+const allowDirty = process.argv.includes('--allow-dirty');
 
 function run(cmd, cwd = rootDir) {
   console.log(`\n> ${cmd}`);
@@ -14,6 +15,20 @@ function run(cmd, cwd = rootDir) {
 
 if (fs.existsSync(path.join(rootDir, '.github', 'workflows'))) {
   throw new Error('Abortado: existe .github/workflows en contra de la política de costo $0.');
+}
+
+const originUrl = execSync('git remote get-url origin', { cwd: rootDir, encoding: 'utf8' }).trim();
+if (!originUrl) {
+  throw new Error('Abortado: el remoto git "origin" no está configurado.');
+}
+
+if (!allowDirty) {
+  const dirty = execSync('git status --porcelain', { cwd: rootDir, encoding: 'utf8' }).trim();
+  if (dirty) {
+    throw new Error(
+      'Abortado: hay cambios sin commitear en el árbol de trabajo. Haz commit en main antes de desplegar (o pasa --allow-dirty).'
+    );
+  }
 }
 
 run('npm run check');

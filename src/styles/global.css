@@ -40,6 +40,10 @@ html {
   scroll-behavior: smooth;
 }
 
+:where([id]) {
+  scroll-margin-top: 5.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -658,6 +662,14 @@ p {
 .prose-doctrina th {
   background-color: var(--pu-navy-900);
   color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .prose-doctrina table {
+    display: block;
+    overflow-x: auto;
+    max-inline-size: 100%;
+  }
 }
 
 @media print {

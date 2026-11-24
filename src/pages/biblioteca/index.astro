@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
+import { normalizeSearchText } from '../../lib/search';
 import { withBase } from '../../lib/url';
 
 const documentos = (await getCollection('documentos')).sort((a, b) =>
@@ -33,7 +34,7 @@ const documentos = (await getCollection('documentos')).sort((a, b) =>
         <input
           id="buscar-doc"
           type="search"
-          placeholder="Ej. Estructura, Escuela Política, Ed25519..."
+          placeholder="Ej. Estructura, Escuela Politica, Ed25519..."
           class="mt-1.5 w-full rounded-lg border border-ink-muted/60 bg-surface-page px-3 py-2 text-sm text-ink"
         />
       </div>
@@ -46,7 +47,7 @@ const documentos = (await getCollection('documentos')).sort((a, b) =>
       {documentos.map((doc) => (
         <article
           data-doc-card
-          data-search={`${doc.data.titulo} ${doc.data.categoria} ${doc.data.resumen} ${doc.data.organoEmisor}`.toLowerCase()}
+          data-search={normalizeSearchText(`${doc.data.titulo} ${doc.data.categoria} ${doc.data.resumen} ${doc.data.organoEmisor}`)}
           class="rounded-xl border border-border border-s-4 border-s-navy-900 bg-white p-6 shadow-sm flex flex-col justify-between hover:border-s-gold-400 transition-colors"
         >
           <div>
@@ -79,16 +80,37 @@ const documentos = (await getCollection('documentos')).sort((a, b) =>
         </article>
       ))}
     </div>
+
+    <div
+      id="docs-vacio"
+      hidden
+      class="rounded-xl border border-border bg-white p-6 text-center space-y-3"
+    >
+      <p class="text-sm font-medium text-ink-muted">
+        No hay documentos que coincidan con tu búsqueda.
+      </p>
+      <button
+        type="button"
+        id="btn-limpiar-docs"
+        class="btn rounded-lg bg-navy-900 text-white px-4 py-2 text-sm font-bold hover:bg-navy-800 cursor-pointer"
+      >
+        Limpiar búsqueda
+      </button>
+    </div>
   </div>
 </BaseLayout>
 
 <script>
+  import { normalizeSearchText } from '../../lib/search';
+
   const inputDoc = document.getElementById('buscar-doc');
   const estadoDocs = document.getElementById('docs-estado');
+  const vacioDocs = document.getElementById('docs-vacio');
+  const btnLimpiarDocs = document.getElementById('btn-limpiar-docs');
   const cards = Array.from(document.querySelectorAll('[data-doc-card]'));
 
-  inputDoc?.addEventListener('input', () => {
-    const q = inputDoc instanceof HTMLInputElement ? inputDoc.value.trim().toLowerCase() : '';
+  function applyDocFilter() {
+    const q = inputDoc instanceof HTMLInputElement ? normalizeSearchText(inputDoc.value) : '';
     let visible = 0;
     for (const card of cards) {
       const hay = card.getAttribute('data-search') || '';
@@ -96,8 +118,21 @@ const documentos = (await getCollection('documentos')).sort((a, b) =>
       card.toggleAttribute('hidden', !match);
       if (match) visible += 1;
     }
+    vacioDocs?.toggleAttribute('hidden', visible > 0);
     if (estadoDocs) {
-      estadoDocs.textContent = `Mostrando ${visible} de ${cards.length} documentos disponibles.`;
+      estadoDocs.textContent =
+        visible === 0
+          ? `Sin coincidencias (0 de ${cards.length} documentos disponibles).`
+          : `Mostrando ${visible} de ${cards.length} documentos disponibles.`;
+    }
+  }
+
+  inputDoc?.addEventListener('input', applyDocFilter);
+  btnLimpiarDocs?.addEventListener('click', () => {
+    if (inputDoc instanceof HTMLInputElement) {
+      inputDoc.value = '';
+      applyDocFilter();
+      inputDoc.focus();
     }
   });
 </script>

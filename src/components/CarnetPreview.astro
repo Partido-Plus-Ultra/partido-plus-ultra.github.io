@@ -2,10 +2,17 @@
 import QRCode from 'qrcode';
 import EmblemaSvg from './EmblemaSvg.astro';
 import Icon from './Icon.astro';
-import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
+import { DEMO_SAMPLE_TOKEN, verifyCarnetToken } from '../lib/crypto-carnet';
 import { SITE_URL, withBase } from '../lib/url';
 
-const qrTargetUrl = new URL(withBase('/militancia/'), SITE_URL).toString() + `#token=${encodeURIComponent(DEMO_SAMPLE_TOKEN)}`;
+const verifiedDemo = await verifyCarnetToken(DEMO_SAMPLE_TOKEN, []);
+if (verifiedDemo.status !== 'valid') {
+  throw new Error('DEMO_SAMPLE_TOKEN inválido al compilar CarnetPreview');
+}
+const demoPayload = verifiedDemo.payload;
+
+const tokenFragment = `#token=${encodeURIComponent(DEMO_SAMPLE_TOKEN)}`;
+const qrTargetUrl = new URL(withBase('/militancia/'), SITE_URL).toString() + tokenFragment;
 const qrSvg = await QRCode.toString(qrTargetUrl, {
   type: 'svg',
   errorCorrectionLevel: 'L',
@@ -23,11 +30,11 @@ const qrSvg = await QRCode.toString(qrTargetUrl, {
       <Icon name="qr" class="w-3.5 h-3.5" />
       <span>Muestra Referencial · Fase 2</span>
     </span>
-    <span class="text-xs text-slate-300 font-mono">Ed25519 · kid: demo-2026-01</span>
+    <span class="text-xs text-slate-300 font-mono">Ed25519 · kid: {demoPayload.kid}</span>
   </div>
 
   <h3 id="maqueta-carnet-heading" class="mt-4 text-lg font-bold text-white">
-    Carnet Digital Anónimo — Nivel 4
+    Carnet Digital Anónimo — Nivel {demoPayload.nivel}
   </h3>
   <p class="mt-1 text-xs text-slate-300 leading-relaxed">
     Diseño previsto para Fase 2. Este código QR es real y escaneable: apunta a la credencial de demostración para probar el verificador al instante.
@@ -40,14 +47,14 @@ const qrSvg = await QRCode.toString(qrTargetUrl, {
         <EmblemaSvg class="w-10 h-10 shrink-0" decorative={true} />
         <div>
           <p class="font-serif text-sm font-bold text-gold-300">PARTIDO PLUS ULTRA</p>
-          <p class="text-[11px] uppercase tracking-widest text-slate-300">Militancia Operativa · Nivel 4</p>
+          <p class="text-[11px] uppercase tracking-widest text-slate-300">Militancia Operativa · Nivel {demoPayload.nivel}</p>
         </div>
       </div>
 
       <dl class="grid grid-cols-2 gap-x-4 gap-y-2 pt-2 border-t border-navy-700 text-xs">
         <div>
           <dt class="text-slate-400 uppercase tracking-wider text-[10px]">Código</dt>
-          <dd class="font-mono font-bold text-white">PU-N4-DEMO-7K9P</dd>
+          <dd class="font-mono font-bold text-white">{demoPayload.id}</dd>
         </div>
         <div>
           <dt class="text-slate-400 uppercase tracking-wider text-[10px]">Identidad</dt>
@@ -55,11 +62,11 @@ const qrSvg = await QRCode.toString(qrTargetUrl, {
         </div>
         <div>
           <dt class="text-slate-400 uppercase tracking-wider text-[10px]">Estado</dt>
-          <dd class="font-semibold text-emerald-300">Credencial DEMO</dd>
+          <dd class="font-semibold text-emerald-300">Credencial {demoPayload.tipo}</dd>
         </div>
         <div>
           <dt class="text-slate-400 uppercase tracking-wider text-[10px]">Emisión</dt>
-          <dd class="font-mono text-slate-200">2026-11-23</dd>
+          <dd class="font-mono text-slate-200">{demoPayload.emitido}</dd>
         </div>
       </dl>
     </div>
@@ -68,12 +75,23 @@ const qrSvg = await QRCode.toString(qrTargetUrl, {
       <div
         class="w-36 h-36 rounded-lg bg-white p-2 border-2 border-gold-400 shadow"
         role="img"
-        aria-label="Código QR escaneable de la credencial de demostración PU-N4-DEMO-7K9P"
+        aria-label={`Código QR escaneable de la credencial de demostración ${demoPayload.id}`}
         set:html={qrSvg}
       />
       <span class="mt-1.5 text-[10px] uppercase tracking-wider text-gold-300 font-semibold">
         Escanea para validar
       </span>
     </div>
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-navy-800 flex justify-end">
+    <a
+      href={tokenFragment}
+      id="btn-verificar-desde-carnet"
+      class="inline-flex items-center gap-1.5 text-xs font-bold text-gold-300 underline underline-offset-4 hover:text-white"
+    >
+      <span>Verificar esta credencial en vivo</span>
+      <Icon name="arrow-right" class="w-3.5 h-3.5" />
+    </a>
   </div>
 </aside>

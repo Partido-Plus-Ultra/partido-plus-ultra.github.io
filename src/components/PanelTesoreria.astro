@@ -1,6 +1,7 @@
 ---
 import type { LibroTesoreria } from '../lib/tesoreria-metrics';
 import { calcularResumen, formatearMoneda } from '../lib/tesoreria-metrics';
+import { normalizeSearchText } from '../lib/search';
 import { REPO_URL } from '../lib/url';
 import Icon from './Icon.astro';
 
@@ -13,7 +14,12 @@ const resumen = calcularResumen(libro);
 const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))).sort();
 ---
 
-<section aria-labelledby="tesoreria-heading" class="space-y-6">
+<section
+  id="panel-tesoreria"
+  data-libro={JSON.stringify(libro)}
+  aria-labelledby="tesoreria-heading"
+  class="space-y-6"
+>
   <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
     <div>
       <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-700">
@@ -127,57 +133,68 @@ const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))
             </td>
           </tr>
         ) : (
-          libro.movimientos.map((mov) => (
-            <tr
-              data-mov-row
-              data-tipo={mov.tipo}
-              data-categoria={mov.categoria}
-              data-texto={`${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`.toLowerCase()}
-            >
-              <th scope="row">{mov.id}</th>
-              <td class="tabular-nums">{mov.fecha}</td>
-              <td class="capitalize font-semibold">{mov.tipo}</td>
-              <td>{mov.categoria}</td>
-              <td>{mov.concepto}</td>
-              <td class="font-mono font-semibold tabular-nums">{formatearMoneda(mov.montoCentimos, libro.simbolo)}</td>
-              <td>{mov.comprobanteRef ?? 'Por adjuntar'}</td>
+          <>
+            {libro.movimientos.map((mov) => (
+              <tr
+                data-mov-row
+                data-tipo={mov.tipo}
+                data-categoria={mov.categoria}
+                data-texto={normalizeSearchText(`${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`)}
+              >
+                <th scope="row">{mov.id}</th>
+                <td class="tabular-nums">{mov.fecha}</td>
+                <td class="capitalize font-semibold">{mov.tipo}</td>
+                <td>{mov.categoria}</td>
+                <td>{mov.concepto}</td>
+                <td class="font-mono font-semibold tabular-nums">{formatearMoneda(mov.montoCentimos, libro.simbolo)}</td>
+                <td>{mov.comprobanteRef ?? 'Por adjuntar'}</td>
+              </tr>
+            ))}
+            <tr data-no-matches hidden>
+              <td colspan="7" class="text-center py-8 text-ink-muted">
+                Sin movimientos coincidentes con el filtro aplicado.
+              </td>
             </tr>
-          ))
+          </>
         )}
       </tbody>
     </table>
   </div>
 </section>
 
-<script define:vars={{ libroJson: JSON.stringify(libro) }}>
-  const libroData = JSON.parse(libroJson);
+<script>
+  import type { LibroTesoreria } from '../lib/tesoreria-metrics';
+  import { exportarCsvSeguro, filtrarMovimientos } from '../lib/tesoreria-metrics';
+  import { normalizeSearchText } from '../lib/search';
+
+  const panel = document.getElementById('panel-tesoreria');
+  let libroData: LibroTesoreria | null = null;
+  try {
+    libroData = JSON.parse(panel?.dataset.libro ?? 'null') as LibroTesoreria | null;
+  } catch {
+    libroData = null;
+  }
+
   const selectTipo = document.getElementById('filtro-tipo');
   const selectCat = document.getElementById('filtro-categoria');
   const inputBusq = document.getElementById('filtro-busqueda');
   const estadoEl = document.getElementById('tesoreria-estado');
   const btnCsv = document.getElementById('btn-exportar-csv');
   const rows = Array.from(document.querySelectorAll('[data-mov-row]'));
+  const noMatchesRow = document.querySelector('[data-no-matches]');
 
-  function getFilteredMovs() {
-    const tipo = selectTipo instanceof HTMLSelectElement ? selectTipo.value : 'todos';
-    const cat = selectCat instanceof HTMLSelectElement ? selectCat.value : 'todas';
-    const q = inputBusq instanceof HTMLInputElement ? inputBusq.value.trim().toLowerCase() : '';
-
-    return libroData.movimientos.filter((mov) => {
-      if (tipo !== 'todos' && mov.tipo !== tipo) return false;
-      if (cat !== 'todas' && mov.categoria !== cat) return false;
-      if (q) {
-        const hay = `${mov.id} ${mov.concepto} ${mov.categoria} ${mov.comprobanteRef ?? ''}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
+  function currentFilter() {
+    const rawTipo = selectTipo instanceof HTMLSelectElement ? selectTipo.value : 'todos';
+    const tipo: 'todos' | 'ingreso' | 'egreso' =
+      rawTipo === 'ingreso' || rawTipo === 'egreso' ? rawTipo : 'todos';
+    const categoria = selectCat instanceof HTMLSelectElement ? selectCat.value : 'todas';
+    const query = inputBusq instanceof HTMLInputElement ? inputBusq.value : '';
+    return { tipo, categoria, query };
   }
 
   function applyFilters() {
-    const tipo = selectTipo instanceof HTMLSelectElement ? selectTipo.value : 'todos';
-    const cat = selectCat instanceof HTMLSelectElement ? selectCat.value : 'todas';
-    const q = inputBusq instanceof HTMLInputElement ? inputBusq.value.trim().toLowerCase() : '';
+    const { tipo, categoria, query } = currentFilter();
+    const q = normalizeSearchText(query);
     let visible = 0;
 
     for (const row of rows) {
@@ -186,11 +203,13 @@ const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))
       const rText = row.getAttribute('data-texto') || '';
       const match =
         (tipo === 'todos' || rTipo === tipo) &&
-        (cat === 'todas' || rCat === cat) &&
+        (categoria === 'todas' || rCat === categoria) &&
         (!q || rText.includes(q));
       row.toggleAttribute('hidden', !match);
       if (match) visible += 1;
     }
+
+    noMatchesRow?.toggleAttribute('hidden', !(rows.length > 0 && visible === 0));
 
     if (estadoEl) {
       if (rows.length > 0 && visible === 0) {
@@ -205,32 +224,11 @@ const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))
   selectCat?.addEventListener('change', applyFilters);
   inputBusq?.addEventListener('input', applyFilters);
 
-  function sanitizeCsvCell(value) {
-    const str = String(value ?? '');
-    const neutralized = /^[=+\-@\t\r]/.test(str) ? `'${str}` : str;
-    return `"${neutralized.replace(/"/g, '""')}"`;
-  }
-
   btnCsv?.addEventListener('click', () => {
-    const filtered = getFilteredMovs();
-    const headers = ['ID', 'Fecha', 'Tipo', 'Categoria', 'Concepto', `Monto (${libroData.simbolo})`, 'Comprobante'];
-    const lines = [headers.map(sanitizeCsvCell).join(',')];
-    for (const mov of filtered) {
-      lines.push(
-        [
-          mov.id,
-          mov.fecha,
-          mov.tipo,
-          mov.categoria,
-          mov.concepto,
-          (mov.montoCentimos / 100).toFixed(2),
-          mov.comprobanteRef ?? '',
-        ]
-          .map(sanitizeCsvCell)
-          .join(',')
-      );
-    }
-    const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    if (!libroData) return;
+    const filtered = filtrarMovimientos(libroData.movimientos, currentFilter());
+    const csvContent = exportarCsvSeguro(filtered, libroData.simbolo);
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

@@ -1,3 +1,5 @@
+import { isValidIsoDate } from './search.ts';
+
 export interface CarnetPayload {
   id: string;
   kid: string;
@@ -57,10 +59,20 @@ function isValidPayload(data: unknown): data is CarnetPayload {
   if (record.nivel !== 3 && record.nivel !== 4) {
     return false;
   }
-  if (typeof record.emitido !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(record.emitido)) {
+  if (!record.id.startsWith(`PU-N${record.nivel}-`)) {
+    return false;
+  }
+  if (typeof record.emitido !== 'string' || !isValidIsoDate(record.emitido)) {
     return false;
   }
   if (record.tipo !== 'DEMO' && record.tipo !== 'OFICIAL') {
+    return false;
+  }
+  const hasDemoSegment = record.id.includes('-DEMO-');
+  if (record.tipo === 'DEMO' && !hasDemoSegment) {
+    return false;
+  }
+  if (record.tipo === 'OFICIAL' && hasDemoSegment) {
     return false;
   }
   if (typeof record.escuelaCertificada !== 'boolean') {
@@ -76,7 +88,7 @@ export async function verifyCarnetToken(
   rawToken: string,
   revokedIds: readonly string[] = []
 ): Promise<VerifyResult> {
-  const token = rawToken.trim();
+  const token = String(rawToken ?? '').replace(/\s+/g, '');
   if (!token) {
     return { status: 'invalid', reason: 'Ingresa una credencial para verificar.' };
   }
