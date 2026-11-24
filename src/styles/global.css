@@ -189,15 +189,15 @@ p {
 .header-inner {
   max-inline-size: 80rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: clamp(0.65rem, 2.5vw, 1rem);
   padding-block: 0.7rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: clamp(0.5rem, 2vw, 1rem);
 }
 
-.header-inner > * {
+.site-header.is-wide .header-inner > * {
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -205,22 +205,29 @@ p {
 .site-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: clamp(0.45rem, 1.8vw, 0.7rem);
+  min-inline-size: 0;
+  flex: 1 1 auto;
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 
+.site-header.is-wide .site-logo {
+  flex: 0 0 auto;
+}
+
 .site-logo-text {
   display: flex;
   flex-direction: column;
+  min-inline-size: 0;
   line-height: 1.15;
 }
 
 .site-logo-title {
   font-family: var(--font-serif);
-  font-size: 1.02rem;
+  font-size: clamp(0.9rem, 0.78rem + 0.5vw, 1.02rem);
   color: #ffffff;
 }
 
@@ -234,25 +241,39 @@ p {
 .site-nav {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .menu-button {
   anchor-name: --menu-button;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.9rem;
+  gap: 0.45rem;
+  padding: 0.48rem 0.75rem;
   border-radius: 0.5rem;
   border: 1.5px solid var(--pu-gold-400);
   background-color: var(--pu-navy-800);
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
   cursor: pointer;
 }
 
 .menu-button:hover {
   background-color: var(--pu-navy-700);
+}
+
+@media (max-width: 399px) {
+  .site-header:not(.is-wide) .site-logo-sub {
+    display: none;
+  }
+
+  .site-header:not(.is-wide) .menu-button {
+    padding: 0.45rem 0.65rem;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+  }
 }
 
 @supports not selector(:popover-open) {
@@ -662,6 +683,15 @@ p {
 .prose-doctrina th {
   background-color: var(--pu-navy-900);
   color: #ffffff;
+}
+
+.prose-doctrina code {
+  overflow-wrap: anywhere;
+}
+
+.prose-doctrina pre {
+  overflow-x: auto;
+  max-inline-size: 100%;
 }
 
 @media (max-width: 640px) {
