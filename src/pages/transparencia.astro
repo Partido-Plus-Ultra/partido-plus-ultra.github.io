@@ -51,6 +51,7 @@ const actas = (await getCollection('actas')).sort((a, b) =>
           <Picture
             src={visualTransparencia}
             formats={['avif', 'webp']}
+            fallbackFormat="jpeg"
             widths={[480, 800]}
             sizes="(max-width: 1024px) 100vw, 40vw"
             alt="Ilustración institucional de balanza cívica y libro contable abierto."

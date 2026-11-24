@@ -8,6 +8,7 @@ import { SITE_URL, withBase } from '../lib/url';
 const qrTargetUrl = new URL(withBase('/militancia/'), SITE_URL).toString() + `#token=${encodeURIComponent(DEMO_SAMPLE_TOKEN)}`;
 const qrSvg = await QRCode.toString(qrTargetUrl, {
   type: 'svg',
+  errorCorrectionLevel: 'L',
   margin: 1,
   color: {
     dark: '#061838',
@@ -65,7 +66,7 @@ const qrSvg = await QRCode.toString(qrTargetUrl, {
 
     <div class="sm:col-span-4 flex flex-col items-center">
       <div
-        class="w-28 h-28 rounded-lg bg-white p-1.5 border-2 border-gold-400 shadow"
+        class="w-36 h-36 rounded-lg bg-white p-2 border-2 border-gold-400 shadow"
         role="img"
         aria-label="Código QR escaneable de la credencial de demostración PU-N4-DEMO-7K9P"
         set:html={qrSvg}
