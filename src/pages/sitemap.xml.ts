@@ -12,6 +12,7 @@ export const GET: APIRoute = async () => {
     '/biblioteca/',
     '/militancia/',
     '/escuela-politica/',
+    '/privacidad/',
     ...documentos.map((doc) => `/biblioteca/${doc.id}/`),
     ...actas.map((acta) => `/transparencia/actas/${acta.id}/`),
   ];

@@ -13,7 +13,7 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
     <div>
       <span class="inline-block rounded bg-navy-900 text-gold-300 text-xs font-bold uppercase tracking-wider px-2.5 py-1">
-        Criptografía Ed25519 · Verificación Local
+        Criptografía Ed25519 · Rotación kid · Soporte QR (#token=)
       </span>
       <h2 id="verificador-heading" class="mt-2 text-2xl font-extrabold text-navy-900">
         Verificador Oficial de Carnets y Certificados
@@ -26,7 +26,7 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
 
   <p class="mt-4 text-sm text-ink-muted leading-relaxed">
     Comprueba si una credencial digital de <strong>Nivel 4</strong> o certificado de <strong>Nivel 3</strong> es auténtico
-    sin exponer la identidad del militante ni consultar bases de datos externas.
+    sin exponer la identidad del militante ni consultar bases de datos externas. También admite lectura directa mediante enlace QR con fragmento privado <code>#token=...</code>.
   </p>
 
   <form id="form-verificador" class="mt-5 space-y-4">
@@ -69,6 +69,13 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
       >
         Probar credencial alterada
       </button>
+      <button
+        type="button"
+        id="btn-copiar-qr"
+        class="btn rounded-lg bg-white text-navy-900 border border-border px-4 py-2.5 text-sm font-semibold hover:bg-surface-muted cursor-pointer"
+      >
+        Copiar enlace QR DEMO
+      </button>
     </div>
   </form>
 
@@ -97,7 +104,29 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
   const textarea = document.getElementById('token-carnet');
   const btnDemo = document.getElementById('btn-cargar-demo');
   const btnAlterada = document.getElementById('btn-cargar-alterada');
+  const btnCopiarQr = document.getElementById('btn-copiar-qr');
   const resultadoEl = document.getElementById('resultado-verificador');
+
+  function extractTokenFromLocation(): string | null {
+    const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
+    if (hash) {
+      const hashParams = new URLSearchParams(hash);
+      const hashToken = hashParams.get('token');
+      if (hashToken) return hashToken.trim();
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryToken = searchParams.get('token');
+    if (queryToken) {
+      searchParams.delete('token');
+      const remainingSearch = searchParams.toString();
+      const cleanUrl = `${window.location.pathname}${remainingSearch ? `?${remainingSearch}` : ''}#token=${encodeURIComponent(queryToken)}`;
+      window.history.replaceState(null, '', cleanUrl);
+      return queryToken.trim();
+    }
+
+    return null;
+  }
 
   async function runVerification() {
     if (!(textarea instanceof HTMLTextAreaElement) || !resultadoEl) return;
@@ -123,6 +152,7 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
       list.className = 'mt-2 grid gap-1 sm:grid-cols-2 text-xs sm:text-sm';
       const rows: [string, string][] = [
         ['Identificador', result.payload.id],
+        ['Clave de firma (kid)', result.payload.kid],
         ['Rango', nivelDesc],
         ['Fecha de emisión', result.payload.emitido],
         ['Escuela Política', result.payload.escuelaCertificada ? 'Aprobada y certificada' : 'No requerida para Nivel 4'],
@@ -174,4 +204,26 @@ import { DEMO_SAMPLE_TOKEN } from '../lib/crypto-carnet';
       void runVerification();
     }
   });
+
+  btnCopiarQr?.addEventListener('click', async () => {
+    const qrUrl = `${window.location.origin}${window.location.pathname}#token=${encodeURIComponent(demoToken)}`;
+    if (!resultadoEl) return;
+    resultadoEl.className = 'mt-5 rounded-xl border border-navy-900 bg-surface-muted p-4 text-sm text-navy-900';
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(qrUrl);
+        resultadoEl.textContent = `Enlace QR DEMO copiado al portapapeles (con fragmento privado #token=).`;
+      } else {
+        resultadoEl.textContent = `Enlace QR DEMO generado: ${qrUrl}`;
+      }
+    } catch {
+      resultadoEl.textContent = `Enlace QR DEMO generado: ${qrUrl}`;
+    }
+  });
+
+  const urlToken = extractTokenFromLocation();
+  if (urlToken && textarea instanceof HTMLTextAreaElement) {
+    textarea.value = urlToken;
+    void runVerification();
+  }
 </script>

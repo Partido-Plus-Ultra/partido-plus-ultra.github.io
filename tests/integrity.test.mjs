@@ -17,6 +17,9 @@ const tesoreria = JSON.parse(
   fs.readFileSync(path.join(rootDir, 'src', 'data', 'tesoreria.json'), 'utf8')
 );
 
+const BAD_KID_TOKEN =
+  'PU1.eyJpZCI6IlBVLU40LURFTU8tN0s5UCIsImtpZCI6ImRlbW8taW5leGlzdGVudGUtOTkiLCJuaXZlbCI6NCwiZW1pdGlkbyI6IjIwMjYtMTEtMjMiLCJ0aXBvIjoiREVNTyIsImVzY3VlbGFDZXJ0aWZpY2FkYSI6ZmFsc2V9.Q-t4PyE0ItHy_ZI_XSUo-L38PO0R-UItzuMWyOfC_XZGZ-58jgQHA4lT9L13sArRroJAyOkGtKaap8nZNIGrDg';
+
 test('organigrama cumple las reglas estatutarias de poderes y niveles', () => {
   assert.equal(organigrama.poderes.length, 3);
   assert.equal(organigrama.niveles.length, 5);
@@ -98,14 +101,18 @@ test('tesorería cuadra matemáticamente en céntimos y neutraliza CSV injection
   assert.match(csv, /"'=CMD\|calc"/);
 });
 
-test('verificador criptográfico Ed25519 valida demo, rechaza alterados y detecta revocados', async () => {
+test('verificador criptográfico Ed25519 valida kid, rechaza alterados, kid desconocido y revocados', async () => {
   const validRes = await verifyCarnetToken(DEMO_SAMPLE_TOKEN, []);
   assert.equal(validRes.status, 'valid');
   if (validRes.status === 'valid') {
     assert.equal(validRes.isDemo, true);
     assert.equal(validRes.payload.id, 'PU-N4-DEMO-7K9P');
+    assert.equal(validRes.payload.kid, 'demo-2026-01');
     assert.equal(validRes.payload.nivel, 4);
   }
+
+  const badKidRes = await verifyCarnetToken(BAD_KID_TOKEN, []);
+  assert.equal(badKidRes.status, 'invalid');
 
   const tampered = DEMO_SAMPLE_TOKEN.slice(0, -4) + 'XXXX';
   const invalidRes = await verifyCarnetToken(tampered, []);
@@ -115,7 +122,7 @@ test('verificador criptográfico Ed25519 valida demo, rechaza alterados y detect
   assert.equal(revokedRes.status, 'revoked');
 });
 
-test('política de soberanía CI/CD y privacidad de repositorio', () => {
+test('política de soberanía CI/CD, privacidad y documentación obligatoria', () => {
   assert.equal(
     fs.existsSync(path.join(rootDir, '.github', 'workflows')),
     false,
@@ -125,4 +132,10 @@ test('política de soberanía CI/CD y privacidad de repositorio', () => {
   const gitignore = fs.readFileSync(path.join(rootDir, '.gitignore'), 'utf8');
   assert.match(gitignore, /^_privado\/$/m);
   assert.match(gitignore, /^\*\.ogg$/m);
+
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'privacidad.astro')), true);
+  assert.equal(
+    fs.existsSync(path.join(rootDir, 'src', 'content', 'documentos', 'arquitectura-fase-2-seguridad.md')),
+    true
+  );
 });

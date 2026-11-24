@@ -1,5 +1,6 @@
 export interface CarnetPayload {
   id: string;
+  kid: string;
   nivel: 3 | 4;
   emitido: string;
   tipo: 'DEMO' | 'OFICIAL';
@@ -12,20 +13,22 @@ export type VerifyResult =
   | { status: 'invalid'; reason: string }
   | { status: 'unsupported'; message: string };
 
-export const DEMO_PUBLIC_KEY_JWK: JsonWebKey = {
-  key_ops: ['verify'],
-  ext: true,
-  alg: 'Ed25519',
-  kty: 'OKP',
-  crv: 'Ed25519',
-  x: 'E_SMhjcsC7sMniweS1JX9LTDyJXX6TiQyI-Ze4bI-ME',
+export const DEMO_PUBLIC_KEYS: Record<string, JsonWebKey> = {
+  'demo-2026-01': {
+    key_ops: ['verify'],
+    ext: true,
+    alg: 'Ed25519',
+    kty: 'OKP',
+    crv: 'Ed25519',
+    x: '4tJlhgpBFU5T3cL5_gqDbFplWGjffLHEYpr6rwtZTnA',
+  },
 };
 
-// Reservada para Fase 2: clave pública oficial generada por el Poder Constitucional (Nivel 2).
-export const OFFICIAL_PUBLIC_KEY_JWK: JsonWebKey | null = null;
+// Reservada para Fase 2: claves públicas oficiales indexadas por `kid` para rotación sin corte.
+export const OFFICIAL_PUBLIC_KEYS: Record<string, JsonWebKey> = {};
 
 export const DEMO_SAMPLE_TOKEN =
-  'PU1.eyJpZCI6IlBVLU40LURFTU8tN0s5UCIsIm5pdmVsIjo0LCJlbWl0aWRvIjoiMjAyNi0xMS0yMyIsInRpcG8iOiJERU1PIiwiZXNjdWVsYUNlcnRpZmljYWRhIjpmYWxzZX0.XsdrJve9s-945zSxEkppoIFd6EQc6ZU0WeoyH5NFf-5ZKN9zC6Z3Vzi_BP59QpT1pV17WWu3GyobdxMsoy_NBA';
+  'PU1.eyJpZCI6IlBVLU40LURFTU8tN0s5UCIsImtpZCI6ImRlbW8tMjAyNi0wMSIsIm5pdmVsIjo0LCJlbWl0aWRvIjoiMjAyNi0xMS0yMyIsInRpcG8iOiJERU1PIiwiZXNjdWVsYUNlcnRpZmljYWRhIjpmYWxzZX0.gLZOskAWq_j5sE_uOAXanvJqYWk9X2Pm4C_CRImEWpQl3vblqa-qIVrJicVqhxYj38CBuH3XPzLyPA-EqLPtCw';
 
 function decodeBase64UrlToBytes(input: string): Uint8Array<ArrayBuffer> {
   if (!/^[A-Za-z0-9_-]+$/.test(input)) {
@@ -46,6 +49,9 @@ function isValidPayload(data: unknown): data is CarnetPayload {
   const record = data as Record<string, unknown>;
 
   if (typeof record.id !== 'string' || !/^PU-N[34]-(?:DEMO|[A-Z0-9]{4})-[A-Z0-9]{4}$/.test(record.id)) {
+    return false;
+  }
+  if (typeof record.kid !== 'string' || !/^[a-z0-9-]+$/.test(record.kid)) {
     return false;
   }
   if (record.nivel !== 3 && record.nivel !== 4) {
@@ -106,12 +112,15 @@ export async function verifyCarnetToken(
     };
   }
 
-  const publicKeyJwk = payload.tipo === 'DEMO' ? DEMO_PUBLIC_KEY_JWK : OFFICIAL_PUBLIC_KEY_JWK;
+  const keyRegistry = payload.tipo === 'DEMO' ? DEMO_PUBLIC_KEYS : OFFICIAL_PUBLIC_KEYS;
+  const publicKeyJwk = Object.hasOwn(keyRegistry, payload.kid) ? keyRegistry[payload.kid] : null;
   if (!publicKeyJwk) {
     return {
       status: 'invalid',
       reason:
-        'La clave pública oficial de Fase 2 aún no ha sido emitida por el Poder Constitucional (Nivel 2).',
+        payload.tipo === 'OFICIAL'
+          ? `La clave pública oficial "${payload.kid}" aún no ha sido publicada o no corresponde al registro de Fase 2.`
+          : `El identificador de clave "${payload.kid}" no existe en el registro autorizado.`,
     };
   }
 

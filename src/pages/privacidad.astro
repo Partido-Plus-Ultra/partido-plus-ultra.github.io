@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="Privacidad y Datos Personales"
+  description="Política de privacidad, cero rastreo en Fase 1 y compromisos bajo la Ley N.° 29733 (ANPD) del Partido Plus Ultra."
+>
+  <div class="max-w-4xl mx-auto px-4 py-10 space-y-10">
+    <header class="border-b border-border pb-6 space-y-3">
+      <p class="text-xs font-bold uppercase tracking-widest text-gold-700">Cumplimiento Legal y Protección Ciudadana</p>
+      <h1 id="contenido-principal" tabindex="-1" class="text-3xl sm:text-4xl font-extrabold text-navy-900">
+        Política de Privacidad y Protección de Datos Personales
+      </h1>
+      <p class="text-base text-ink-muted">
+        Cómo protege el Partido Plus Ultra la identidad de los ciudadanos frente a la vigilancia, conforme a la legislación peruana vigente.
+      </p>
+    </header>
+
+    <section aria-labelledby="fase1-privacidad-heading" class="space-y-3">
+      <h2 id="fase1-privacidad-heading" class="text-2xl font-extrabold text-navy-900">
+        1. Estado Real en Fase 1 (Cero Rastreo y Cero Datos Personales)
+      </h2>
+      <ul class="list-disc pl-6 space-y-2 text-ink">
+        <li><strong>Cero cookies de rastreo o publicidad:</strong> Este portal estático no instala cookies analíticas ni scripts de seguimiento de terceros.</li>
+        <li><strong>Cero datos personales (PII) en GitHub:</strong> No recopilamos nombres, números de DNI, teléfonos, direcciones IP ni correos electrónicos de visitantes o simpatizantes en este repositorio público.</li>
+        <li><strong>Verificación 100% local en tu navegador:</strong> El Verificador Oficial de Carnets evalúa firmas Ed25519 localmente en tu dispositivo mediante Web Crypto API; si usas un enlace QR con <code>#token=...</code>, el fragmento posterior a <code>#</code> nunca se envía a servidores ni registros HTTP.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="ley-29733-heading" class="space-y-3">
+      <h2 id="ley-29733-heading" class="text-2xl font-extrabold text-navy-900">
+        2. Marco Legal Peruano: Ley N.° 29733 (ANPD) vs. Transparencia (ONPE / JNE)
+      </h2>
+      <p class="text-ink leading-relaxed">
+        Toda recopilación futura de datos personales identificables se regirá por la <strong>Ley N.° 29733 — Ley de Protección de Datos Personales</strong> y su Reglamento ante la Autoridad Nacional de Protección de Datos Personales (ANPD), en armonía con las obligaciones de fiscalización financiera de la <strong>ONPE</strong> y de registro partidario ante el <strong>ROP/JNE</strong> (Ley N.° 28094).
+      </p>
+      <p class="text-ink leading-relaxed">
+        Cuando un ciudadano realice aportes económicos bancarizados o formalice su afiliación legal ante el ROP, sus datos exigidos por ley serán tratados exclusivamente para dicha finalidad legal, evitando su exposición indiscriminada cuando no exista mandato legal de publicidad.
+      </p>
+    </section>
+
+    <section aria-labelledby="compromisos-fase2-heading" class="space-y-3">
+      <h2 id="compromisos-fase2-heading" class="text-2xl font-extrabold text-navy-900">
+        3. Compromisos Obligatorios Antes de Habilitar la Fase 2
+      </h2>
+      <ul class="list-disc pl-6 space-y-2 text-ink">
+        <li><strong>Separación estricta Nivel 4 vs. Padrón Legal:</strong> La militancia operativa digital (Nivel 4) se mantendrá pseudónima y desacoplada del padrón legal con DNI custodiado por el Poder Constitucional (Nivel 2) para Nivel 3 y trámites ROP.</li>
+        <li><strong>Consentimiento informado y flujo transfronterizo:</strong> Si en Fase 2 se emplean servicios externos (como Cloudflare Workers/D1) para formularios o Escuela Política que impliquen datos personales, se recabará consentimiento previo, expreso e informado, declarando el flujo transfronterizo e inscribiendo el banco de datos ante la ANPD cuando corresponda.</li>
+        <li><strong>Respaldos cifrados bajo custodia física del Nivel 2:</strong> Ningún registro orgánico dependerá exclusivamente de un proveedor gratuito externo sin copias de seguridad cifradas en poder del Poder Constitucional.</li>
+      </ul>
+      <div class="pt-3">
+        <a href={withBase('/biblioteca/arquitectura-fase-2-seguridad/')} class="font-bold text-navy-900 underline underline-offset-4">
+          Leer la Especificación Técnica y de Seguridad de Fase 2 →
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

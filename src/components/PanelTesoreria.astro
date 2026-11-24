@@ -186,7 +186,11 @@ const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))
     }
 
     if (estadoEl) {
-      estadoEl.textContent = `Mostrando ${visible} de ${rows.length} movimientos registrados.`;
+      if (rows.length > 0 && visible === 0) {
+        estadoEl.textContent = `Sin coincidencias para el filtro aplicado (0 de ${rows.length} movimientos).`;
+      } else {
+        estadoEl.textContent = `Mostrando ${visible} de ${rows.length} movimientos registrados.`;
+      }
     }
   }
 
@@ -226,5 +230,8 @@ const categorias = Array.from(new Set(libro.movimientos.map((m) => m.categoria))
     a.download = `tesoreria-plus-ultra-${libroData.ejercicio}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    if (estadoEl) {
+      estadoEl.textContent = `CSV auditable descargado (${filtered.length} movimiento(s) exportado(s)).`;
+    }
   });
 </script>
