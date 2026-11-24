@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CompartirWhatsapp from '../components/CompartirWhatsapp.astro';
 import EmblemaSvg from '../components/EmblemaSvg.astro';
 import Icon from '../components/Icon.astro';
 import heroImg from '../assets/img/hero-amanecer-civico.webp';
@@ -85,11 +86,11 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
         </div>
         <div class="flex items-center gap-2.5 text-slate-200">
           <Icon name="github" class="w-4 h-4 text-gold-300 shrink-0" />
-          <span><strong>Git-as-a-Ledger</strong> auditable</span>
+          <span><strong>Cuentas y actas</strong> auditables en línea</span>
         </div>
         <div class="flex items-center gap-2.5 text-slate-200">
           <Icon name="lock" class="w-4 h-4 text-gold-300 shrink-0" />
-          <span><strong>Cero PII</strong> en repositorio público</span>
+          <span><strong>Privacidad real</strong> sin exponer tu DNI</span>
         </div>
       </div>
     </div>
@@ -100,7 +101,7 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
       <div>
         <h2 id="metricas-heading" class="text-2xl sm:text-3xl font-bold text-navy-900">
-          Tablero Público en Vivo (Git-as-a-Ledger)
+          Tablero Público en Vivo (Auditoría Abierta)
         </h2>
         <p class="mt-1 text-sm text-ink-muted">
           Datos calculados directamente desde los archivos públicos auditables del repositorio.
@@ -278,6 +279,32 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
           <Icon name="arrow-right" class="w-4 h-4" />
         </a>
       </article>
+    </div>
+
+    <div class="mt-6 rounded-xl border border-border bg-white p-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <h3 class="text-base font-bold text-navy-900">
+          Comparte y descarga el resumen oficial (Kit WhatsApp)
+        </h3>
+        <p class="text-sm text-ink-muted">
+          Ayúdanos a difundir la estructura limpia del partido o descarga la guía PDF para reenviar sin gastar datos en web.
+          <span class="block mt-1 text-xs">
+            Canal oficial unidireccional de simpatizantes (Nivel 5): en registro por el Poder Constitucional (Nivel 2) con línea institucional verificada.
+          </span>
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 shrink-0">
+        <CompartirWhatsapp
+          mensaje="Conoce el portal abierto del Partido Plus Ultra (Perú): transparencia en cuentas, 3 poderes, 5 niveles y Escuela Política obligatoria."
+        />
+        <a
+          href={withBase('/documentos/estructura-basica-v2.pdf')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-4 py-2.5 text-sm font-bold hover:bg-navy-800"
+        >
+          <Icon name="download" class="w-4 h-4 text-gold-300 shrink-0" />
+          <span>Descargar resumen PDF</span>
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

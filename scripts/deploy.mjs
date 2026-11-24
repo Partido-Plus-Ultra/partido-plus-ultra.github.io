@@ -42,6 +42,20 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
 if (!fs.existsSync(path.join(distDir, '.nojekyll'))) {
   throw new Error('Abortado: dist/.nojekyll no existe.');
 }
+if (!fs.existsSync(path.join(distDir, 'robots.txt'))) {
+  throw new Error('Abortado: dist/robots.txt no fue generado.');
+}
+if (!fs.existsSync(path.join(distDir, 'sitemap.xml'))) {
+  throw new Error('Abortado: dist/sitemap.xml no fue generado.');
+}
+const cnamePath = path.join(distDir, 'CNAME');
+if (fs.existsSync(cnamePath)) {
+  const cnameDomain = fs.readFileSync(cnamePath, 'utf8').trim();
+  if (!cnameDomain) {
+    throw new Error('Abortado: dist/CNAME está vacío.');
+  }
+  console.log(`\nDominio personalizado detectado (CNAME): ${cnameDomain}`);
+}
 
 const tempWorktree = fs.mkdtempSync(path.join(os.tmpdir(), 'pu-gh-pages-'));
 const tempBranch = `gh-pages-deploy-${Date.now()}`;

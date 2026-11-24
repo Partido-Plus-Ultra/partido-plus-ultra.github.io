@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CompartirWhatsapp from '../components/CompartirWhatsapp.astro';
 import PiramideInteractiva from '../components/PiramideInteractiva.astro';
 import Icon from '../components/Icon.astro';
 import organigrama from '../data/organigrama.json';
@@ -22,7 +23,7 @@ import { withBase } from '../lib/url';
       <p class="text-base text-slate-200 max-w-3xl leading-relaxed">
         {organigrama.partido.identidad.resumen}
       </p>
-      <div class="pt-2">
+      <div class="pt-2 flex flex-wrap gap-3">
         <a
           href={withBase('/documentos/estructura-basica-v2.pdf')}
           class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-5 py-2.5 text-sm font-bold hover:bg-gold-300"
@@ -30,6 +31,10 @@ import { withBase } from '../lib/url';
           <Icon name="download" class="w-4 h-4" />
           <span>Descargar Documento Oficial PDF (v2)</span>
         </a>
+        <CompartirWhatsapp
+          mensaje="Revisa cómo funciona el Partido Plus Ultra en Perú: 3 poderes, 5 niveles y prohibición de postular para quienes dirigen la doctrina y finanzas."
+          variante="oscura"
+        />
       </div>
     </header>
 

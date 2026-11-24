@@ -205,6 +205,23 @@ test('verificador Ed25519 valida kid, saltos de línea y rechaza incoherencias d
   )}.sig`;
   assert.equal((await verifyCarnetToken(mismatchTipo, [])).status, 'invalid');
 
+  // Escalación de privilegio: clave autorizada solo para Nivel 4 no puede emitir Nivel 3
+  const levelEscalation = `PU1.${b64u(
+    JSON.stringify({
+      id: 'PU-N3-DEMO-7K9P',
+      kid: 'demo-2026-01',
+      nivel: 3,
+      emitido: '2026-11-23',
+      tipo: 'DEMO',
+      escuelaCertificada: true,
+    })
+  )}.sig`;
+  const levelEscalationRes = await verifyCarnetToken(levelEscalation, []);
+  assert.equal(levelEscalationRes.status, 'invalid');
+  if (levelEscalationRes.status === 'invalid') {
+    assert.match(levelEscalationRes.reason, /no está autorizada/i);
+  }
+
   // Fecha imposible
   const badDate = `PU1.${b64u(
     JSON.stringify({
@@ -246,6 +263,13 @@ test('política de soberanía CI/CD, privacidad, cero CDNs externos y activos vi
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'assets', 'img', 'hero-amanecer-civico.webp')), true);
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'assets', 'img', 'visual-transparencia.webp')), true);
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'components', 'EscuelaIlustracionSvg.astro')), true);
+
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'robots.txt.ts')), true);
+  assert.equal(fs.existsSync(path.join(rootDir, 'public', 'robots.txt')), false);
+  assert.equal(
+    fs.existsSync(path.join(rootDir, 'docs', 'BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md')),
+    true
+  );
 
   // Garantizar cero llamadas a fuentes externas de Google en src/
   const walk = (dir) => {

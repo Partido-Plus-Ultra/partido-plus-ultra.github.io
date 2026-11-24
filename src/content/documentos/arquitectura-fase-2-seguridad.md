@@ -1,10 +1,10 @@
 ---
 titulo: "Especificación Técnica de Fase 2/3: Seguridad, Resiliencia y Gobernanza"
 categoria: "Transparencia"
-version: "1.0"
+version: "1.1"
 fecha: "2026-11-24"
 organoEmisor: "Infraestructura Digital / Poder Constitucional"
-resumen: "Arquitectura de seguridad para el registro anónimo Nivel 4 (Cloudflare Workers + D1), defensa anti-Sybil, rotación de llaves Ed25519 (kid), Escuela Política anti-fraude y checklist legal/estatutario."
+resumen: "Arquitectura de seguridad para el registro anónimo Nivel 4 (Cloudflare Workers + D1), defensa anti-Sybil, separación de privilegios Ed25519 por nivel (HOT_WORKER_N4 vs COLD_NIVEL2_N3), Escuela Política escalable y checklist legal."
 ---
 
 ## 1. Infraestructura Serverless Costo $0: Elección Técnica
@@ -20,9 +20,11 @@ Para pasar de un portal estático (Fase 1) a un sistema con inscripción anónim
 
 1. **Defensa Anti-Sybil y Anti-Bots:** El endpoint de registro exigirá validación mediante **Cloudflare Turnstile**, limitación de tasa (*rate limiting*) por ventana temporal y controles anti-inflado para impedir que scripts externos generen miles de carnets falsos.
 2. **Recuperación Explícita sin Exponer Identidad:** Al emitir un carnet `PU-N4`, el sistema entregará por única vez una frase/llave de recuperación descargable para que el militante no pierda su progreso en la Escuela Política si cambia o pierde su dispositivo.
-3. **Protocolo `PU1` con Rotación de Llaves (`kid`):**
+3. **Protocolo `PU1` con Rotación de Llaves (`kid`) y Separación de Privilegios por Nivel:**
    - Cada credencial incluye el identificador de llave `kid` en su carga útil (`PU1.<payload>.<firma>`).
-   - Esto permite al Poder Constitucional rotar periódicamente la clave privada Ed25519 sin invalidar los carnets vigentes emitidos con claves anteriores autorizadas.
+   - Además de permitir la rotación periódica sin cortes, el registro oficial (`OFFICIAL_PUBLIC_KEYS` en `src/lib/crypto-carnet.ts`) exige declarar `allowedLevels` y tipo de custodia (`custody`) para cada `kid`:
+     - **Llaves en línea (`HOT_WORKER_N4`):** autorizadas **únicamente para emitir Nivel 4 (`allowedLevels: [4]`)** desde Cloudflare Workers. Si un entorno serverless llegara a verse comprometido, resulta criptográficamente imposible usar esa clave para falsificar un certificado de cantera (`Nivel 3`).
+     - **Llave fría (`COLD_NIVEL2_N3`):** custodiada fuera de línea por el Poder Constitucional (Nivel 2), autorizada **exclusivamente para Nivel 3 (`allowedLevels: [3]`)** tras superar el examen oral y la verificación de antecedentes.
 4. **QR Seguro por Fragmento (`#token=`):** Los códigos QR de verificación apuntan a `/militancia/#token=...`. Al ir en el fragmento `#`, la credencial es leída únicamente por el navegador del verificador y jamás queda registrada en logs de servidores HTTP intermedios.
 
 ---
@@ -39,8 +41,9 @@ Para pasar de un portal estático (Fase 1) a un sistema con inscripción anónim
 
 La plataforma digital controla el **registro auditable de trazabilidad** (reloj real mínimo de **6 meses sin atajos**, lecturas y evaluaciones base), pero **no certifica automáticamente** por cuestionarios en línea vulnerables a bots o IA generativa:
 
-1. **Evaluación oral / sincrónica obligatoria** ante docentes autorizados del **Nivel 1 y Nivel 2**.
-2. **Verificación previa de idoneidad y antecedentes** (penales, judiciales y policiales) antes de emitir la certificación oficial de ingreso a la **Asamblea Dirigencial / Cantera (Nivel 3)**.
+1. **Cátedra escalable por cohortes (100% Nivel 1 y Nivel 2):** Clases magistrales y materiales elaborados exclusivamente por N1/N2 para permitir atención simultánea a miles de militantes sin perder rigor ni bloquear al grupo docente inicial.
+2. **Evaluación oral / sincrónica obligatoria** mediante mesas evaluadoras autorizadas del **Nivel 1 y Nivel 2** con rúbricas públicas estandarizadas.
+3. **Verificación previa de idoneidad y antecedentes** (penales, judiciales y policiales) antes de emitir la certificación oficial de ingreso a la **Asamblea Dirigencial / Cantera (Nivel 3)** firmada con llave fría (`COLD_NIVEL2_N3`).
 
 ---
 

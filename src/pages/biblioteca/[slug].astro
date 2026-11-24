@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CompartirWhatsapp from '../../components/CompartirWhatsapp.astro';
 import Icon from '../../components/Icon.astro';
 import { withBase } from '../../lib/url';
 
@@ -35,8 +36,8 @@ const { Content } = await render(doc);
         {doc.data.titulo}
       </h1>
       <p class="text-base text-ink-muted leading-relaxed">{doc.data.resumen}</p>
-      {doc.data.pdfUrl && (
-        <div class="no-print pt-2">
+      <div class="no-print pt-2 flex flex-wrap gap-3">
+        {doc.data.pdfUrl && (
           <a
             href={withBase(doc.data.pdfUrl)}
             class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-4 py-2.5 text-sm font-bold hover:bg-navy-800"
@@ -44,8 +45,11 @@ const { Content } = await render(doc);
             <Icon name="download" class="w-4 h-4 text-gold-300" />
             <span>Descargar archivo PDF original</span>
           </a>
-        </div>
-      )}
+        )}
+        <CompartirWhatsapp
+          mensaje={`Lee el documento "${doc.data.titulo}" del Partido Plus Ultra (Perú):`}
+        />
+      </div>
     </header>
 
     <div class="prose-doctrina mt-8 rounded-2xl bg-white border border-border p-6 sm:p-10 shadow-sm text-ink leading-relaxed">

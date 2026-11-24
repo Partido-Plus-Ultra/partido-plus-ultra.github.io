@@ -16,7 +16,8 @@ export type IconName =
   | 'x'
   | 'alert'
   | 'arrow-right'
-  | 'spark';
+  | 'spark'
+  | 'share';
 
 interface Props {
   name: IconName;
@@ -152,5 +153,14 @@ const { name, class: className = 'w-5 h-5' } = Astro.props;
   )}
   {name === 'spark' && (
     <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z" />
+  )}
+  {name === 'share' && (
+    <>
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <path d="M8.6 13.5l6.8 4" />
+      <path d="M15.4 6.5l-6.8 4" />
+    </>
   )}
 </svg>

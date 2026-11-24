@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+import { SITE_URL } from '../lib/url';
+
+interface Props {
+  mensaje: string;
+  etiqueta?: string;
+  variante?: 'clara' | 'oscura';
+}
+
+const {
+  mensaje,
+  etiqueta = 'Compartir por WhatsApp',
+  variante = 'clara',
+} = Astro.props;
+
+const fullUrl = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).toString();
+const waHref = `https://wa.me/?text=${encodeURIComponent(`${mensaje} ${fullUrl}`)}`;
+
+const classes =
+  variante === 'oscura'
+    ? 'border border-gold-400 bg-navy-800 text-white hover:bg-navy-700'
+    : 'border border-emerald-700 bg-emerald-50 text-emerald-900 hover:bg-emerald-100';
+---
+
+<a
+  href={waHref}
+  target="_blank"
+  rel="noopener noreferrer"
+  class={`btn no-print inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold ${classes}`}
+>
+  <Icon name="share" class="w-4 h-4 shrink-0" />
+  <span>{etiqueta}</span>
+</a>

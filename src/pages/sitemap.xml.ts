@@ -2,7 +2,8 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE_URL, withBase } from '../lib/url';
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ site }) => {
+  const baseSite = site?.toString() ?? SITE_URL;
   const documentos = await getCollection('documentos');
   const actas = await getCollection('actas');
   const staticPaths = [
@@ -19,7 +20,7 @@ export const GET: APIRoute = async () => {
 
   const urls = staticPaths
     .map((path) => {
-      const fullUrl = new URL(withBase(path), SITE_URL).toString();
+      const fullUrl = new URL(withBase(path), baseSite).toString();
       return `  <url>\n    <loc>${fullUrl}</loc>\n  </url>`;
     })
     .join('\n');

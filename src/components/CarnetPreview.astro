@@ -12,7 +12,7 @@ if (verifiedDemo.status !== 'valid') {
 const demoPayload = verifiedDemo.payload;
 
 const tokenFragment = `#token=${encodeURIComponent(DEMO_SAMPLE_TOKEN)}`;
-const qrTargetUrl = new URL(withBase('/militancia/'), SITE_URL).toString() + tokenFragment;
+const qrTargetUrl = new URL(withBase('/militancia/'), Astro.site ?? SITE_URL).toString() + tokenFragment;
 const qrSvg = await QRCode.toString(qrTargetUrl, {
   type: 'svg',
   errorCorrectionLevel: 'L',

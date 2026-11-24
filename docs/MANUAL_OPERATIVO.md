@@ -119,13 +119,41 @@ Valores permitidos para `categoria`: `"Estructura"`, `"Doctrina"`, `"Reglamento"
 ## 7. Alta y rotación de llaves Ed25519 oficiales (Fase 2)
 
 En `src/lib/crypto-carnet.ts`:
-1. Conservar las claves anteriores autorizadas dentro de `OFFICIAL_PUBLIC_KEYS` indexadas por su `kid` (ej. `"pu-oficial-2027-01"`) para que los carnets vigentes emitidos previamente sigan validando sin cortes.
-2. Añadir la nueva clave pública en formato JWK (`kty: "OKP"`, `crv: "Ed25519"`, `alg: "Ed25519"`, `key_ops: ["verify"]`).
-3. **Jamás** incluir la clave privada (`d` en JWK) en este archivo ni en el repositorio público.
+1. Conservar las claves anteriores autorizadas dentro de `OFFICIAL_PUBLIC_KEYS` indexadas por su `kid` (ej. `"pu-n4-2027-01"`) para que los carnets vigentes emitidos previamente sigan validando sin cortes.
+2. Especificar obligatoriamente `allowedLevels` y `custody` respetando la separación de privilegios:
+   - Clave online (Cloudflare Workers): `allowedLevels: [4]`, `custody: 'HOT_WORKER_N4'`.
+   - Clave fría (custodiada por Nivel 2): `allowedLevels: [3]`, `custody: 'COLD_NIVEL2_N3'`.
+3. Añadir la nueva clave pública en formato JWK (`kty: "OKP"`, `crv: "Ed25519"`, `alg: "Ed25519"`, `key_ops: ["verify"]`):
+
+```ts
+'pu-n4-2027-01': {
+  jwk: { key_ops: ['verify'], ext: true, alg: 'Ed25519', kty: 'OKP', crv: 'Ed25519', x: '<PUBLIC_X>' },
+  allowedLevels: [4],
+  custody: 'HOT_WORKER_N4',
+}
+```
+
+4. **Jamás** incluir la clave privada (`d` en JWK) en este archivo ni en el repositorio público.
 
 ---
 
-## 8. Flujo de Validación, Commit y Despliegue a Producción
+## 8. Migración limpia a Dominio Propio (p. ej. `.org` o `.pe`)
+
+Para cambiar de `partido-plus-ultra.github.io` a un dominio propio sin romper `robots.txt`, `sitemap.xml` ni los códigos QR:
+
+1. Actualizar `site` en `astro.config.mjs` (p. ej. `'https://partidoplusultra.pe'`) y `SITE_URL` en `src/lib/url.ts`.
+2. Crear `public/CNAME` conteniendo únicamente el dominio propio en una línea (para que `scripts/deploy.mjs` lo copie a `dist/CNAME` y no lo borre en `gh-pages`).
+3. Ejecutar `npm run check && npm test && npm run deploy` y verificar HTTPS en GitHub Pages (`Settings -> Pages`).
+
+---
+
+## 9. Borrador de Reglamento y Checklist Fundacional
+
+Antes de activar recaudación formal, canal oficial de Nivel 5 o trámites ROP/JNE, revisar y someter a acta del Grupo Fundador [docs/BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md](BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md).
+
+---
+
+## 10. Flujo de Validación, Commit y Despliegue a Producción
 
 Después de editar datos o documentación:
 

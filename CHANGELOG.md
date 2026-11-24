@@ -4,7 +4,14 @@ Todos los hitos relevantes del repositorio `Partido-Plus-Ultra/partido-plus-ultr
 
 ---
 
-## [2026-11-24] — Documentación integral y actualización arquitectónica pública
+## [2026-11-24] — Separación criptográfica por nivel, dominio propio, WhatsApp y borrador fundacional
+
+- Añadida separación estricta de privilegios por clave `kid` (`PublicKeyEntry` con `allowedLevels` y `custody`: `DEMO | HOT_WORKER_N4 | COLD_NIVEL2_N3`) en `src/lib/crypto-carnet.ts` y pruebas anti-escalación en `tests/integrity.test.mjs`.
+- Reemplazado `public/robots.txt` por endpoint dinámico `src/pages/robots.txt.ts` ligado a `Astro.site`; centralizado `Astro.site` en `src/pages/sitemap.xml.ts` y `src/components/CarnetPreview.astro`, y añadida validación de `dist/robots.txt`, `dist/sitemap.xml` y `dist/CNAME` en `scripts/deploy.mjs`.
+- Mejorado el lenguaje ciudadano en `src/pages/index.astro` (sustituyendo jerga técnica en portada) e incorporado `src/components/CompartirWhatsapp.astro` + descarga rápida del resumen PDF en portada, estructura, documentos y actas.
+- Redactado `docs/BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md` (incompatibilidades N1/N2, anti-bloqueo, cohortes escalables en Escuela Política, canal seguro N5 y checklist Ley N.° 28094) y actualizada `src/content/documentos/arquitectura-fase-2-seguridad.md` a **v1.1**.
+
+## [2026-11-24] — Documentación integral y actualización arquitectónica pública (`a4180ed`)
 
 - Actualizado `README.md` con el inventario completo de las 12 rutas compiladas, stack exacto, estructura de directorios y flujo soberano de despliegue.
 - Creados `docs/ARQUITECTURA.md` (contratos de módulos `src/lib/*`, esquemas Zod, criptografía Ed25519 y componentes UI) y `docs/MANUAL_OPERATIVO.md` (guía práctica de operación para Nivel 2).

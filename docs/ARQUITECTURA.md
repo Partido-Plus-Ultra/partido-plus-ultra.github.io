@@ -11,6 +11,9 @@ Documento técnico de referencia sobre el diseño, módulos, contratos de datos,
   - `base: '/'`
   - `trailingSlash: 'always'`
   - Integración CSS vía `@tailwindcss/vite` (Tailwind CSS v4) con tokens en `@theme` y variables `:root` dentro de `src/styles/global.css`.
+- **Fuente única de verdad de dominio (`Astro.site`):**
+  - `src/pages/robots.txt.ts` y `src/pages/sitemap.xml.ts` utilizan `{ site }` provisto por Astro (`astro.config.mjs`) con respaldo en `SITE_URL` (`src/lib/url.ts`), al igual que `CarnetPreview.astro` (`Astro.site ?? SITE_URL`).
+  - `public/CNAME` (cuando se configure dominio propio) se preserva y valida automáticamente durante el despliegue.
 - **Resolución uniforme de rutas (`src/lib/url.ts`):**
   - Exporta `SITE_URL`, `REPO_URL` y `withBase(path)` para respetar `import.meta.env.BASE_URL` en enlaces internos y URLs canónicas sin romper URLs externas (`http:`, `https:`, `mailto:`, `tel:`, `#`).
 - **Cero llamadas a servicios de terceros en tiempo de ejecución:**
@@ -44,8 +47,9 @@ Todos los módulos en `src/lib/` usan TypeScript estricto compartido tanto por e
   - Coherencia académica: si `nivel === 3`, `escuelaCertificada` debe ser `true`.
   - `kid`: patrón `^[a-z0-9-]+$` e indexación separada en `DEMO_PUBLIC_KEYS` (incluye `demo-2026-01`) u `OFFICIAL_PUBLIC_KEYS` (reservada para Fase 2).
   - `emitido`: fecha calendario real validada con `isValidIsoDate`.
+- **Separación de privilegios por `kid` (`PublicKeyEntry`):** cada llave en `DEMO_PUBLIC_KEYS` y `OFFICIAL_PUBLIC_KEYS` exige `{ jwk, allowedLevels, custody }` (`'DEMO' | 'HOT_WORKER_N4' | 'COLD_NIVEL2_N3'`). Antes de verificar la firma, `verifyCarnetToken` comprueba `keyEntry.allowedLevels.includes(payload.nivel)` para impedir escalaciones de privilegio (una llave automatizada de Nivel 4 jamás puede firmar un certificado de Nivel 3).
 - **Verificación Ed25519 y Revocación:**
-  - Importa la clave pública JWK (`OKP` / `Ed25519`) mediante `crypto.subtle.importKey` y verifica la firma sobre los bytes UTF-8 del segmento `payloadB64`.
+  - Importa `keyEntry.jwk` (`OKP` / `Ed25519`) mediante `crypto.subtle.importKey` y verifica la firma sobre los bytes UTF-8 del segmento `payloadB64`.
   - Si la firma es válida pero `payload.id` está listado en `src/data/revocaciones.json`, devuelve `status: 'revoked'`.
   - Si Web Crypto o Ed25519 no están disponibles en el navegador, devuelve `status: 'unsupported'` con mensaje degradado explícito.
 
@@ -72,6 +76,8 @@ Todos los módulos en `src/lib/` usan TypeScript estricto compartido tanto por e
   - Compactación por debajo de `400px` (`@media (max-width: 399px)`) ocultando `.site-logo-sub` y usando tamaños fluidos (`clamp`) para garantizar `0px` de desborde horizontal en `320px` (WCAG 1.4.10 Reflow).
 - **`PanelTesoreria.astro`:**
   - Carga datos serializados en `data-*` y los procesa mediante `<script>` empaquetado que importa directamente `tesoreria-metrics.ts` (sin duplicar lógica en JS inline).
+- **`CompartirWhatsapp.astro`:**
+  - Botón enlace sin JavaScript (`https://wa.me/?text=...`) con contraste AA (`variante="clara"` / `"oscura"`) que adjunta la URL canónica actual (`Astro.url.pathname` sobre `Astro.site ?? SITE_URL`) en portada, estructura, documentos y actas.
 - **`CarnetPreview.astro` y `VerificadorCarnet.astro`:**
   - `CarnetPreview` verifica `DEMO_SAMPLE_TOKEN` en tiempo de compilación, extrae sus campos reales y genera el `<svg>` QR con `errorCorrectionLevel: 'L'` apuntando a `${SITE_URL}/militancia/#token=...`.
   - `VerificadorCarnet` escucha `hashchange` para verificación instantánea sin recargar página, migra `?token=` a `#token=` con `history.replaceState` si llega por query string y utiliza un contador secuencial (`verifySeq`) para descartar resultados asincrónicos obsoletos.
@@ -87,6 +93,6 @@ Todos los módulos en `src/lib/` usan TypeScript estricto compartido tanto por e
 1. Comprueba que **no existe** `.github/workflows` (política anti-billing).
 2. Verifica que `origin` existe y que el árbol Git está limpio (a menos que se pase `--allow-dirty`).
 3. Ejecuta secuencialmente `npm run check`, `npm test` y `npm run build`.
-4. Valida la presencia de `dist/index.html` y `dist/.nojekyll`.
+4. Valida la presencia de `dist/index.html`, `dist/.nojekyll`, `dist/robots.txt` y `dist/sitemap.xml` (y verifica si existe `dist/CNAME` no vacío cuando hay dominio propio).
 5. Crea un `git worktree` temporal en `os.tmpdir()`, abre una rama huérfana única `gh-pages-deploy-<timestamp>`, copia `dist/`, confirma y publica con `--force` en `origin/gh-pages`.
 6. Garantiza en bloque `finally` la eliminación del worktree, del directorio temporal y de la rama temporal local.

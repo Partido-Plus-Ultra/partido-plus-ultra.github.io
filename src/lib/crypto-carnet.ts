@@ -15,19 +15,33 @@ export type VerifyResult =
   | { status: 'invalid'; reason: string }
   | { status: 'unsupported'; message: string };
 
-export const DEMO_PUBLIC_KEYS: Record<string, JsonWebKey> = {
+export type KeyCustody = 'DEMO' | 'HOT_WORKER_N4' | 'COLD_NIVEL2_N3';
+
+export interface PublicKeyEntry {
+  jwk: JsonWebKey;
+  allowedLevels: readonly (3 | 4)[];
+  custody: KeyCustody;
+}
+
+export const DEMO_PUBLIC_KEYS: Record<string, PublicKeyEntry> = {
   'demo-2026-01': {
-    key_ops: ['verify'],
-    ext: true,
-    alg: 'Ed25519',
-    kty: 'OKP',
-    crv: 'Ed25519',
-    x: '4tJlhgpBFU5T3cL5_gqDbFplWGjffLHEYpr6rwtZTnA',
+    jwk: {
+      key_ops: ['verify'],
+      ext: true,
+      alg: 'Ed25519',
+      kty: 'OKP',
+      crv: 'Ed25519',
+      x: '4tJlhgpBFU5T3cL5_gqDbFplWGjffLHEYpr6rwtZTnA',
+    },
+    allowedLevels: [4],
+    custody: 'DEMO',
   },
 };
 
-// Reservada para Fase 2: claves públicas oficiales indexadas por `kid` para rotación sin corte.
-export const OFFICIAL_PUBLIC_KEYS: Record<string, JsonWebKey> = {};
+// Reservada para Fase 2: claves públicas oficiales indexadas por `kid` con alcance estricto por nivel:
+// - custody: 'HOT_WORKER_N4' -> allowedLevels: [4] (firma automatizada en Cloudflare Workers)
+// - custody: 'COLD_NIVEL2_N3' -> allowedLevels: [3] (llave fría custodiada por Nivel 2 tras examen oral y antecedentes)
+export const OFFICIAL_PUBLIC_KEYS: Record<string, PublicKeyEntry> = {};
 
 export const DEMO_SAMPLE_TOKEN =
   'PU1.eyJpZCI6IlBVLU40LURFTU8tN0s5UCIsImtpZCI6ImRlbW8tMjAyNi0wMSIsIm5pdmVsIjo0LCJlbWl0aWRvIjoiMjAyNi0xMS0yMyIsInRpcG8iOiJERU1PIiwiZXNjdWVsYUNlcnRpZmljYWRhIjpmYWxzZX0.gLZOskAWq_j5sE_uOAXanvJqYWk9X2Pm4C_CRImEWpQl3vblqa-qIVrJicVqhxYj38CBuH3XPzLyPA-EqLPtCw';
@@ -125,8 +139,8 @@ export async function verifyCarnetToken(
   }
 
   const keyRegistry = payload.tipo === 'DEMO' ? DEMO_PUBLIC_KEYS : OFFICIAL_PUBLIC_KEYS;
-  const publicKeyJwk = Object.hasOwn(keyRegistry, payload.kid) ? keyRegistry[payload.kid] : null;
-  if (!publicKeyJwk) {
+  const keyEntry = Object.hasOwn(keyRegistry, payload.kid) ? keyRegistry[payload.kid] : null;
+  if (!keyEntry) {
     return {
       status: 'invalid',
       reason:
@@ -135,6 +149,13 @@ export async function verifyCarnetToken(
           : `El identificador de clave "${payload.kid}" no existe en el registro autorizado.`,
     };
   }
+  if (!keyEntry.allowedLevels.includes(payload.nivel)) {
+    return {
+      status: 'invalid',
+      reason: `La clave "${payload.kid}" no está autorizada para emitir credenciales de Nivel ${payload.nivel}.`,
+    };
+  }
+  const publicKeyJwk = keyEntry.jwk;
 
   const subtle = globalThis.crypto?.subtle;
   if (!subtle) {

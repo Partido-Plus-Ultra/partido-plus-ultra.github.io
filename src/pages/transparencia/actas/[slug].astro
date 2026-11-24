@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CompartirWhatsapp from '../../../components/CompartirWhatsapp.astro';
 import Icon from '../../../components/Icon.astro';
 import { REPO_URL, withBase } from '../../../lib/url';
 
@@ -45,6 +46,9 @@ const { Content } = await render(acta);
           <Icon name="github" class="w-4 h-4 text-gold-300" />
           <span>Auditar archivo fuente en GitHub</span>
         </a>
+        <CompartirWhatsapp
+          mensaje={`Consulta el Acta ${acta.data.numero} (${acta.data.titulo}) del Partido Plus Ultra:`}
+        />
       </div>
     </header>
 

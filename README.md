@@ -44,7 +44,8 @@ Repositorio público oficial del **Partido Plus Ultra (PU)** en el Perú. Implem
 | `/escuela-politica/` | Regla de permanencia de 6 meses sin atajos, modelo híbrido anti-fraude y ruta hacia Nivel 3. |
 | `/privacidad/` | Política de privacidad, anonimato Nivel 4 y adecuación a la Ley N.° 29733. |
 | `/404.html` | Página de error con `noindex, nofollow` para GitHub Pages. |
-| `/sitemap.xml` | Mapa de sitio dinámico generado en compilación incluyendo todas las páginas, actas y documentos. |
+| `/sitemap.xml` | Mapa de sitio dinámico generado en compilación (`src/pages/sitemap.xml.ts`). |
+| `/robots.txt` | Reglas de rastreo generadas dinámicamente según `Astro.site` (`src/pages/robots.txt.ts`). |
 
 ---
 
@@ -63,14 +64,14 @@ Repositorio público oficial del **Partido Plus Ultra (PU)** en el Perú. Implem
 
 ```text
 ├── docs/
-│   ├── ARQUITECTURA.md                # Referencia técnica detallada de módulos, datos y UI
-│   └── MANUAL_OPERATIVO.md            # Guía práctica para publicar actas, cuentas y claves
+│   ├── ARQUITECTURA.md                                  # Referencia técnica detallada
+│   ├── MANUAL_OPERATIVO.md                              # Guía práctica para publicar actas, cuentas y claves
+│   └── BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md   # Borrador de trabajo N1/N2, deadlocks y ROP
 ├── public/
-│   ├── .nojekyll                      # Desactiva Jekyll en GitHub Pages
-│   ├── favicon.svg                    # Emblema PU vectorial
-│   ├── robots.txt                     # Reglas de indexación
+│   ├── .nojekyll                                        # Desactiva Jekyll en GitHub Pages
+│   ├── favicon.svg                                      # Emblema PU vectorial
 │   ├── documentos/estructura-basica-v2.pdf
-│   └── img/                           # Infografía y tarjeta OpenGraph 1200x630
+│   └── img/                                             # Infografía y tarjeta OpenGraph 1200x630
 ├── scripts/
 │   ├── deploy.mjs                     # Validación + build + push atómico a gh-pages
 │   └── deploy.bat                     # Lanzador Windows del despliegue local
@@ -112,8 +113,9 @@ En Windows también puede ejecutarse directamente `scripts\deploy.bat`. Para pub
 
 - [Arquitectura Técnica (`docs/ARQUITECTURA.md`)](docs/ARQUITECTURA.md)
 - [Manual Operativo de Publicación (`docs/MANUAL_OPERATIVO.md`)](docs/MANUAL_OPERATIVO.md)
+- [Borrador de Reglamento y Checklist Fundacional (`docs/BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md`)](docs/BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md)
 - [Registro de Cambios (`CHANGELOG.md`)](CHANGELOG.md)
 - Documentos públicos en el portal:
   - [Estructura Básica del Partido v2](src/content/documentos/estructura-basica-v2.md)
   - [Arquitectura de Transparencia Digital v1.1](src/content/documentos/arquitectura-transparencia-digital.md)
-  - [Especificación Técnica de Fase 2/3: Seguridad, Resiliencia y Gobernanza](src/content/documentos/arquitectura-fase-2-seguridad.md)
+  - [Especificación Técnica de Fase 2/3: Seguridad, Resiliencia y Gobernanza v1.1](src/content/documentos/arquitectura-fase-2-seguridad.md)
