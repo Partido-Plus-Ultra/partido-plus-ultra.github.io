@@ -17,9 +17,10 @@ import { REPO_URL, withBase } from '../lib/url';
 const documentos = await getCollection('documentos');
 const actas = await getCollection('actas');
 const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
-const baseInicialTotal =
+const totalBaseYMilitancia =
   organigrama.arranqueFundacional.grupoFundadorTotal +
-  organigrama.arranqueFundacional.baseInicialSimpatizantes;
+  organigrama.arranqueFundacional.baseInicialSimpatizantes +
+  avanceCiudadano.militantesDigitalesVerificados;
 
 const faqInicio: FaqItem[] = [
   {
@@ -130,10 +131,11 @@ const faqInicio: FaqItem[] = [
           Tablero Público en Vivo (Auditoría Abierta)
         </h2>
         <p class="mt-1 text-sm text-ink-muted">
-          Cifras 100% reales calculadas directamente desde los archivos públicos verificables del repositorio ({avanceCiudadano.faseActual}).
+          Cifras 100% reales calculadas directamente desde los archivos públicos verificables del repositorio ({avanceCiudadano.faseActual} · Corte:{' '}
+          <time datetime={avanceCiudadano.ultimaActualizacion}>{avanceCiudadano.ultimaActualizacion}</time>).
         </p>
       </div>
-      <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-bold text-navy-800 underline underline-offset-4 hover:text-navy-700">
+      <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-bold text-navy-800 underline underline-offset-4 hover:text-navy-700 shrink-0 sm:whitespace-nowrap">
         <Icon name="github" class="w-4 h-4" />
         <span>Ver historial de commits en GitHub</span>
       </a>
@@ -156,7 +158,7 @@ const faqInicio: FaqItem[] = [
           <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Base y Militancia</p>
           <Icon name="columns" class="w-4 h-4 text-navy-800" />
         </div>
-        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{baseInicialTotal}</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{totalBaseYMilitancia}</p>
         <p class="mt-1 text-xs text-ink-muted">
           {organigrama.arranqueFundacional.grupoFundadorTotal} fundadores · {organigrama.arranqueFundacional.baseInicialSimpatizantes} simpatizantes · {avanceCiudadano.militantesDigitalesVerificados} carnets PU-N4 en Fase 2
         </p>
@@ -170,7 +172,9 @@ const faqInicio: FaqItem[] = [
         <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">
           {avanceCiudadano.firmasRopVerificadas.toLocaleString('es-PE')}
         </p>
-        <p class="mt-1 text-xs text-ink-muted">{avanceCiudadano.notaFirmasRop}</p>
+        <p class="mt-1 text-xs text-ink-muted">
+          Meta referencial: {avanceCiudadano.metaFirmasRopReferencial.toLocaleString('es-PE')} · Comités provinciales: {avanceCiudadano.comitesProvincialesConstituidos} · {avanceCiudadano.notaFirmasRop}
+        </p>
       </div>
 
       <div class="rounded-xl border border-border bg-white p-5 shadow-sm border-t-4 border-t-gold-400">
@@ -332,8 +336,8 @@ const faqInicio: FaqItem[] = [
     </div>
 
     <!-- Cierre Participa y Difunde -->
-    <div class="mt-8 rounded-2xl bg-navy-900 text-white border-2 border-gold-400 p-6 sm:p-8 shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-      <div class="space-y-2 max-w-2xl">
+    <div class="mt-8 rounded-2xl bg-navy-900 text-white border-2 border-gold-400 p-6 sm:p-8 shadow-lg space-y-5">
+      <div class="space-y-2 max-w-3xl">
         <h3 class="text-xl sm:text-2xl font-bold text-white">
           Participa y Difunde con Transparencia (Kit WhatsApp)
         </h3>
@@ -344,7 +348,7 @@ const faqInicio: FaqItem[] = [
           Canal oficial unidireccional de simpatizantes (Nivel 5): en registro bajo custodia del Poder Constitucional (Nivel 2).
         </p>
       </div>
-      <div class="flex flex-wrap gap-3 shrink-0">
+      <div class="flex flex-wrap gap-3">
         <a
           href={withBase('/militancia/')}
           class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-4 py-2.5 text-sm font-bold hover:bg-gold-300"

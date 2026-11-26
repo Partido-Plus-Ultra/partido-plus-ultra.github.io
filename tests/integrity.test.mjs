@@ -269,6 +269,8 @@ test('política de soberanía CI/CD, privacidad, cero CDNs externos y activos vi
 
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'robots.txt.ts')), true);
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'propuestas.astro')), true);
+  const siteHeaderSource = fs.readFileSync(path.join(rootDir, 'src', 'components', 'SiteHeader.astro'), 'utf8');
+  assert.match(siteHeaderSource, /['"]\/propuestas\/['"]/);
   assert.equal(fs.existsSync(path.join(rootDir, 'public', 'robots.txt')), false);
   assert.equal(
     fs.existsSync(path.join(rootDir, 'docs', 'BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md')),
