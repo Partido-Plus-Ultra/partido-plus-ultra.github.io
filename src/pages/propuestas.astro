@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CompartirWhatsapp from '../components/CompartirWhatsapp.astro';
+import Icon from '../components/Icon.astro';
+import organigrama from '../data/organigrama.json';
+import { withBase } from '../lib/url';
+
+const ejesEnDebate = [
+  {
+    codigo: 'Eje 01',
+    titulo: 'Seguridad ciudadana y lucha contra el crimen organizado',
+    descripcion: 'Recuperación del control territorial, inteligencia operativa contra la extorsión y respaldo legal a fuerzas del orden integras.',
+  },
+  {
+    codigo: 'Eje 02',
+    titulo: 'Reforma moral del Estado y compras públicas abiertas',
+    descripcion: 'Trazabilidad digital en contrataciones, muerte civil efectiva para corruptos y prohibición absoluta de conflicto de intereses.',
+  },
+  {
+    codigo: 'Eje 03',
+    titulo: 'Industrialización, formalización y empleo digno',
+    descripcion: 'Impulso a manufactura nacional con valor agregado, simplificación para micro y pequeños emprendedores y seguridad jurídica.',
+  },
+  {
+    codigo: 'Eje 04',
+    titulo: 'Justicia célere y reforma del sistema penitenciario',
+    descripcion: 'Procesos transparentes contra delitos violentos y corrupción, junto con trabajo productivo obligatorio en penales.',
+  },
+  {
+    codigo: 'Eje 05',
+    titulo: 'Educación con valores cívicos, mérito y defensa de la familia',
+    descripcion: 'Formación técnica de calidad, respeto a los padres en la educación de sus hijos y meritocracia docente.',
+  },
+  {
+    codigo: 'Eje 06',
+    titulo: 'Salud primaria y conectividad territorial en regiones',
+    descripcion: 'Cierre real de brechas en postas médicas, agua potable e infraestructura logística que conecte las provincias con mercados nacionales.',
+  },
+];
+---
+
+<BaseLayout
+  title="Plan de Gobierno y Propuestas"
+  description="Pilares fundacionales, método orgánico de elaboración programática y ejes en debate del Partido Plus Ultra (Perú)."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-12">
+    <header class="rounded-2xl bg-civic-grid text-white p-6 sm:p-10 border-2 border-gold-400 shadow-lg space-y-4">
+      <p class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-300">
+        <Icon name="scale" class="w-4 h-4" />
+        <span>Doctrina y Agenda Programática</span>
+      </p>
+      <h1 id="contenido-principal" tabindex="-1" class="font-bold text-white">
+        Plan de Gobierno y Propuestas País
+      </h1>
+      <p class="text-base text-slate-200 max-w-3xl leading-relaxed">
+        {organigrama.partido.identidad.resumen}
+      </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a
+          href={withBase('/biblioteca/')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-5 py-2.5 text-sm font-bold hover:bg-gold-300"
+        >
+          <Icon name="book" class="w-4 h-4" />
+          <span>Leer Doctrina en Biblioteca</span>
+        </a>
+        <CompartirWhatsapp
+          mensaje="Conoce los pilares fundacionales y la agenda programática en construcción del Partido Plus Ultra (Perú):"
+          variante="oscura"
+        />
+      </div>
+    </header>
+
+    <!-- Pilares Fundacionales Vigentes -->
+    <section aria-labelledby="pilares-vigentes-heading" class="space-y-6">
+      <div>
+        <span class="inline-flex items-center gap-1.5 rounded bg-emerald-50 border border-emerald-700 text-emerald-900 px-2.5 py-1 text-xs font-bold uppercase tracking-wider">
+          <Icon name="check" class="w-3.5 h-3.5" />
+          <span>Vigentes en el documento fundacional</span>
+        </span>
+        <h2 id="pilares-vigentes-heading" class="mt-2 text-2xl sm:text-3xl font-bold text-navy-900">
+          Pilares Fundacionales del Partido
+        </h2>
+        <p class="mt-1 text-sm text-ink-muted max-w-3xl">
+          Principios rectores ya establecidos en la Estructura Básica v2 sobre los que se elabora el programa nacional.
+        </p>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {organigrama.partido.identidad.pilares.map((pilar, index) => (
+          <article class="rounded-xl border border-border bg-white p-5 shadow-sm border-t-4 border-t-gold-400">
+            <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Pilar 0{index + 1}</p>
+            <p class="mt-2 text-base font-bold text-navy-900 leading-snug">{pilar}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Procedimiento Orgánico de Elaboración -->
+    <section aria-labelledby="metodo-propuestas-heading" class="rounded-2xl border border-border bg-white p-6 sm:p-8 shadow-sm space-y-6">
+      <div>
+        <h2 id="metodo-propuestas-heading" class="text-2xl font-bold text-navy-900">
+          ¿Cómo construye sus propuestas el Partido Plus Ultra?
+        </h2>
+        <p class="mt-1 text-sm text-ink-muted max-w-3xl">
+          Para evitar promesas improvisadas o planes comprados en campaña, toda propuesta oficial atraviesa el filtro de los tres poderes internos:
+        </p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-3">
+        {organigrama.poderes.map((poder) => (
+          <article class="rounded-xl border border-border bg-surface-page p-5 space-y-2">
+            <p class="text-xs font-bold uppercase tracking-wider text-gold-700">Poder 0{poder.orden} · {poder.subtitulo}</p>
+            <h3 class="text-lg font-bold text-navy-900">{poder.nombre}</h3>
+            <p class="text-sm text-ink leading-relaxed">{poder.funcion}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Ejes en Debate Fundacional -->
+    <section aria-labelledby="agenda-debate-heading" class="space-y-6">
+      <div class="rounded-xl border-s-4 border-gold-400 bg-white border border-border p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wider text-gold-700 flex items-center gap-1.5">
+          <Icon name="alert" class="w-4 h-4" />
+          <span>Estado Transparente · Fase 1 (En elaboración fundacional)</span>
+        </p>
+        <h2 id="agenda-debate-heading" class="mt-1.5 text-2xl sm:text-3xl font-bold text-navy-900">
+          Agenda Programática en Debate (Pendiente de Acta)
+        </h2>
+        <p class="mt-2 text-sm text-ink leading-relaxed max-w-3xl">
+          De acuerdo con nuestras reglas internas, ninguna medida concreta se publica como postura oficial hasta contar con acta aprobada del Grupo Fundador y revisión técnica del Poder Constitucional (Nivel 2). Estos seis ejes ordenan la discusión actual:
+        </p>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {ejesEnDebate.map((eje) => (
+          <article class="rounded-xl border border-border bg-white p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-gold-700">{eje.codigo}</span>
+                <span class="rounded bg-surface-muted border border-border px-2 py-0.5 text-[11px] font-bold text-navy-900">
+                  Eje en debate · Pendiente de acta
+                </span>
+              </div>
+              <h3 class="mt-2.5 text-lg font-bold text-navy-900">{eje.titulo}</h3>
+              <p class="mt-2 text-sm text-ink-muted leading-relaxed">{eje.descripcion}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a
+          href={withBase('/transparencia/')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-5 py-2.5 text-sm font-bold hover:bg-navy-800"
+        >
+          <Icon name="ledger" class="w-4 h-4 text-gold-300" />
+          <span>Auditar Actas y Cuentas Abiertas</span>
+        </a>
+        <a
+          href={withBase('/militancia/')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-white text-navy-900 border border-border px-5 py-2.5 text-sm font-bold hover:bg-surface-muted"
+        >
+          <Icon name="qr" class="w-4 h-4 text-gold-700" />
+          <span>Conocer Militancia Nivel 4</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

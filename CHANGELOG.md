@@ -4,7 +4,14 @@ Todos los hitos relevantes del repositorio `Partido-Plus-Ultra/partido-plus-ultr
 
 ---
 
-## [2026-11-24] — Separación criptográfica por nivel, dominio propio, WhatsApp y borrador fundacional
+## [2026-11-26] — Tablero ciudadano real, portada en 4 ejes, FAQ y página `/propuestas/`
+
+- Añadido `src/data/avance-ciudadano.json` y nueva prueba unitaria en `tests/integrity.test.mjs` para auditar métricas ciudadanas reales en cero inicial (`firmasRopVerificadas`, `militantesDigitalesVerificados`, `comitesProvincialesConstituidos`) y enlaces `canalesOficiales`.
+- Creada la ruta `src/pages/propuestas.astro` (`/propuestas/`) y registrada en `src/pages/sitemap.xml.ts`, exponiendo pilares fundacionales vigentes, método de los tres poderes y ejes programáticos marcados explícitamente como pendientes de acta.
+- Renovada la portada (`src/pages/index.astro`) con tablero de 4 métricas reales ampliadas, bloque de 4 ejes numerados (*Ideología y Doctrina*, *Plan de Gobierno*, *Ascenso y Militancia*, *Escuela Política*), cierre destacado con Kit WhatsApp y acordeón de Preguntas Frecuentes (`AccordionFaq.astro`).
+- Actualizado `src/components/SiteFooter.astro` para enlazar `/propuestas/` y mostrar únicamente canales oficiales verificados no nulos.
+
+## [2026-11-24] — Separación criptográfica por nivel, dominio propio, WhatsApp y borrador fundacional (`dd1b168`)
 
 - Añadida separación estricta de privilegios por clave `kid` (`PublicKeyEntry` con `allowedLevels` y `custody`: `DEMO | HOT_WORKER_N4 | COLD_NIVEL2_N3`) en `src/lib/crypto-carnet.ts` y pruebas anti-escalación en `tests/integrity.test.mjs`.
 - Reemplazado `public/robots.txt` por endpoint dinámico `src/pages/robots.txt.ts` ligado a `Astro.site`; centralizado `Astro.site` en `src/pages/sitemap.xml.ts` y `src/components/CarnetPreview.astro`, y añadida validación de `dist/robots.txt`, `dist/sitemap.xml` y `dist/CNAME` en `scripts/deploy.mjs`.

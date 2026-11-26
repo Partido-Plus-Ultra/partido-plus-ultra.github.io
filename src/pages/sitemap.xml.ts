@@ -9,6 +9,7 @@ export const GET: APIRoute = async ({ site }) => {
   const staticPaths = [
     '/',
     '/estructura/',
+    '/propuestas/',
     '/transparencia/',
     '/biblioteca/',
     '/militancia/',

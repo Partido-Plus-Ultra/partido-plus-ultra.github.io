@@ -2,10 +2,12 @@
 import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AccordionFaq, { type FaqItem } from '../components/AccordionFaq.astro';
 import CompartirWhatsapp from '../components/CompartirWhatsapp.astro';
 import EmblemaSvg from '../components/EmblemaSvg.astro';
 import Icon from '../components/Icon.astro';
 import heroImg from '../assets/img/hero-amanecer-civico.webp';
+import avanceCiudadano from '../data/avance-ciudadano.json';
 import organigrama from '../data/organigrama.json';
 import tesoreria from '../data/tesoreria.json';
 import type { LibroTesoreria } from '../lib/tesoreria-metrics';
@@ -15,6 +17,27 @@ import { REPO_URL, withBase } from '../lib/url';
 const documentos = await getCollection('documentos');
 const actas = await getCollection('actas');
 const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
+const baseInicialTotal =
+  organigrama.arranqueFundacional.grupoFundadorTotal +
+  organigrama.arranqueFundacional.baseInicialSimpatizantes;
+
+const faqInicio: FaqItem[] = [
+  {
+    pregunta: '¿Cómo funciona la inscripción anónima (Nivel 4)?',
+    respuesta:
+      'Para proteger al militante operativo frente a represalias, en la Fase 2 la web emitirá carnets digitales pseudónimos (PU-N4) verificables criptográficamente con Ed25519 sin publicar nombres ni DNI en el repositorio. Quienes deseen permanecer en Nivel 4 pueden hacerlo sin obligación de postular a cargos públicos.',
+  },
+  {
+    pregunta: '¿Qué requisitos exige la Escuela Política para ascender a Nivel 3?',
+    respuesta:
+      'Es obligatorio aprobar un mínimo de 6 meses continuos de formación doctrinal (sin atajos ni exoneraciones) ante docentes exclusivos del Nivel 1 y Nivel 2, además de evaluación oral/sincrónica y verificación de antecedentes antes de ingresar a la Asamblea Dirigencial (única cantera electoral).',
+  },
+  {
+    pregunta: '¿Cómo se auditan los fondos y acuerdos del partido?',
+    respuesta:
+      'Todas las cuentas contables, el registro de autoridades y las actas oficiales se publican en código abierto con historial verificable de cambios en GitHub. El balance de tesorería inicia en S/ 0.00 reales hasta que el Poder Constitucional registre aportes formales bancarizados.',
+  },
+];
 ---
 
 <BaseLayout
@@ -52,9 +75,12 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
           Partido Plus Ultra: Transparencia Total, Orden y Valores
         </h1>
 
-        <p class="text-base sm:text-lg text-slate-200 leading-relaxed">
-          {organigrama.partido.identidad.resumen}
-        </p>
+        <div class="space-y-2.5 text-base sm:text-lg text-slate-200 leading-relaxed">
+          <p>{organigrama.partido.identidad.resumen}</p>
+          <p class="text-sm sm:text-base text-slate-300">
+            Trabajamos con orden, cuentas abiertas y mérito técnico para erradicar la corrupción estatal e impulsar el desarrollo productivo del Perú.
+          </p>
+        </div>
 
         <div class="flex flex-wrap gap-3 pt-2">
           <a
@@ -104,7 +130,7 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
           Tablero Público en Vivo (Auditoría Abierta)
         </h2>
         <p class="mt-1 text-sm text-ink-muted">
-          Datos calculados directamente desde los archivos públicos auditables del repositorio.
+          Cifras 100% reales calculadas directamente desde los archivos públicos verificables del repositorio ({avanceCiudadano.faseActual}).
         </p>
       </div>
       <a href={`${REPO_URL}/commits/main`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-bold text-navy-800 underline underline-offset-4 hover:text-navy-700">
@@ -127,29 +153,35 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
 
       <div class="rounded-xl border border-border bg-white p-5 shadow-sm border-t-4 border-t-navy-800">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Documentos Oficiales</p>
-          <Icon name="book" class="w-4 h-4 text-navy-800" />
+          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Base y Militancia</p>
+          <Icon name="columns" class="w-4 h-4 text-navy-800" />
         </div>
-        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{documentos.length}</p>
-        <p class="mt-1 text-xs text-ink-muted">Disponibles en Biblioteca Doctrinal</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{baseInicialTotal}</p>
+        <p class="mt-1 text-xs text-ink-muted">
+          {organigrama.arranqueFundacional.grupoFundadorTotal} fundadores · {organigrama.arranqueFundacional.baseInicialSimpatizantes} simpatizantes · {avanceCiudadano.militantesDigitalesVerificados} carnets PU-N4 en Fase 2
+        </p>
       </div>
 
       <div class="rounded-xl border border-border bg-white p-5 shadow-sm border-t-4 border-t-navy-800">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Actas Publicadas</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Firmas ROP Verificadas</p>
           <Icon name="document" class="w-4 h-4 text-navy-800" />
         </div>
-        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{actas.length}</p>
-        <p class="mt-1 text-xs text-ink-muted">Registro abierto de acuerdos</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">
+          {avanceCiudadano.firmasRopVerificadas.toLocaleString('es-PE')}
+        </p>
+        <p class="mt-1 text-xs text-ink-muted">{avanceCiudadano.notaFirmasRop}</p>
       </div>
 
       <div class="rounded-xl border border-border bg-white p-5 shadow-sm border-t-4 border-t-gold-400">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Escuela Política Mínima</p>
-          <Icon name="school" class="w-4 h-4 text-gold-700" />
+          <p class="text-xs font-bold uppercase tracking-wider text-ink-muted">Documentos y Actas</p>
+          <Icon name="book" class="w-4 h-4 text-gold-700" />
         </div>
-        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">{organigrama.escuelaPolitica.duracionMinimaMeses} meses</p>
-        <p class="mt-1 text-xs text-ink-muted">Obligatoria para ascender a Nivel 3</p>
+        <p class="mt-2 text-3xl font-bold text-navy-900 tabular-nums">
+          {documentos.length} docs · {actas.length} {actas.length === 1 ? 'acta' : 'actas'}
+        </p>
+        <p class="mt-1 text-xs text-ink-muted">Biblioteca doctrinal y acuerdos públicos</p>
       </div>
     </div>
   </section>
@@ -180,7 +212,7 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
           </p>
           <ul class="mt-3 space-y-2 text-sm text-slate-200">
             <li>Quienes dirigen la moral y finanzas (N1/N2) tienen prohibido postular y tener empresas.</li>
-            <li>Cuentas y actas públicas auditables por historial de commits en Git.</li>
+            <li>Cuentas y actas públicas auditables por historial de cambios en repositorio abierto.</li>
             <li>Única cantera electoral (Nivel 3) tras 6 meses obligatorios de Escuela Política sin atajos.</li>
           </ul>
         </div>
@@ -232,22 +264,40 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
     </div>
   </section>
 
-  <!-- Rutas de Participación -->
-  <section class="max-w-7xl mx-auto px-4 py-12" aria-labelledby="participacion-heading">
-    <h2 id="participacion-heading" class="text-2xl sm:text-3xl font-bold text-navy-900">
-      ¿Cómo participar o auditar el partido?
+  <!-- Información general en 4 ejes ciudadanos -->
+  <section class="max-w-7xl mx-auto px-4 py-12" aria-labelledby="informacion-general-heading">
+    <h2 id="informacion-general-heading" class="text-2xl sm:text-3xl font-bold text-navy-900">
+      Información general y participación
     </h2>
-    <div class="mt-6 grid gap-6 md:grid-cols-3">
+    <p class="mt-1 text-sm text-ink-muted max-w-3xl">
+      Explora nuestros principios, el proceso programático y las reglas reales de ascenso dentro del partido.
+    </p>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <article class="rounded-xl border border-border p-6 bg-white shadow-sm flex flex-col justify-between">
         <div>
           <Icon name="book" class="w-6 h-6 text-gold-700" />
-          <h3 class="mt-3 text-lg font-bold text-navy-900">1. Lee la Doctrina y Estructura</h3>
+          <h3 class="mt-3 text-lg font-bold text-navy-900">1. Ideología y Doctrina</h3>
           <p class="mt-2 text-sm text-ink-muted">
-            Descarga la guía oficial y consulta cada regla de rotación, contrapesos y prohibiciones.
+            Conoce los valores fundacionales, el documento básico v2 y las reglas de contrapesos del partido.
           </p>
         </div>
         <a href={withBase('/biblioteca/')} class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700">
-          <span>Ir a la Biblioteca Doctrinal</span>
+          <span>Ir a Doctrina y Biblioteca</span>
+          <Icon name="arrow-right" class="w-4 h-4" />
+        </a>
+      </article>
+
+      <article class="rounded-xl border border-border p-6 bg-white shadow-sm flex flex-col justify-between">
+        <div>
+          <Icon name="scale" class="w-6 h-6 text-gold-700" />
+          <h3 class="mt-3 text-lg font-bold text-navy-900">2. Plan de Gobierno y Propuestas</h3>
+          <p class="mt-2 text-sm text-ink-muted">
+            Revisa nuestros pilares vigentes, el método interno de los tres poderes y los ejes en debate fundacional.
+          </p>
+        </div>
+        <a href={withBase('/propuestas/')} class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700">
+          <span>Ver Plan de Gobierno</span>
           <Icon name="arrow-right" class="w-4 h-4" />
         </a>
       </article>
@@ -255,13 +305,13 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
       <article class="rounded-xl border border-border p-6 bg-white shadow-sm flex flex-col justify-between">
         <div>
           <Icon name="qr" class="w-6 h-6 text-gold-700" />
-          <h3 class="mt-3 text-lg font-bold text-navy-900">2. Militancia Nivel 4 y Verificador</h3>
+          <h3 class="mt-3 text-lg font-bold text-navy-900">3. Ascenso y Militancia (Nivel 4)</h3>
           <p class="mt-2 text-sm text-ink-muted">
-            Conoce el pacto de militancia operativa anónima con carnet digital y prueba el verificador Ed25519 con QR real.
+            Conoce el pacto de militancia anónima con carnet digital y prueba el verificador criptográfico con QR real.
           </p>
         </div>
         <a href={withBase('/militancia/')} class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700">
-          <span>Ver Militancia y Carnets</span>
+          <span>Ver Plan de Militancia</span>
           <Icon name="arrow-right" class="w-4 h-4" />
         </a>
       </article>
@@ -269,9 +319,9 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
       <article class="rounded-xl border border-border p-6 bg-white shadow-sm flex flex-col justify-between">
         <div>
           <Icon name="school" class="w-6 h-6 text-gold-700" />
-          <h3 class="mt-3 text-lg font-bold text-navy-900">3. Escuela Política (Nivel 3)</h3>
+          <h3 class="mt-3 text-lg font-bold text-navy-900">4. Escuela Política (6 meses)</h3>
           <p class="mt-2 text-sm text-ink-muted">
-            Quien desee representar al partido como dirigente o candidato debe aprobar 6 meses obligatorios sin atajos.
+            Quien aspire a dirigir o postular (Nivel 3) debe aprobar obligatoriamente 6 meses continuos sin atajos.
           </p>
         </div>
         <a href={withBase('/escuela-politica/')} class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-navy-900 underline underline-offset-4 hover:text-navy-700">
@@ -281,30 +331,48 @@ const resumenTesoreria = calcularResumen(tesoreria as LibroTesoreria);
       </article>
     </div>
 
-    <div class="mt-6 rounded-xl border border-border bg-white p-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-      <div class="space-y-1">
-        <h3 class="text-base font-bold text-navy-900">
-          Comparte y descarga el resumen oficial (Kit WhatsApp)
+    <!-- Cierre Participa y Difunde -->
+    <div class="mt-8 rounded-2xl bg-navy-900 text-white border-2 border-gold-400 p-6 sm:p-8 shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div class="space-y-2 max-w-2xl">
+        <h3 class="text-xl sm:text-2xl font-bold text-white">
+          Participa y Difunde con Transparencia (Kit WhatsApp)
         </h3>
-        <p class="text-sm text-ink-muted">
-          Ayúdanos a difundir la estructura limpia del partido o descarga la guía PDF para reenviar sin gastar datos en web.
-          <span class="block mt-1 text-xs">
-            Canal oficial unidireccional de simpatizantes (Nivel 5): en registro por el Poder Constitucional (Nivel 2) con línea institucional verificada.
-          </span>
+        <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+          La emisión en línea de carnets oficiales Nivel 4 iniciará en la <strong>Fase 2</strong> sin exponer identidades personales. Hoy ya puedes verificar nuestro modelo de carnet con QR, compartir este portal o descargar el PDF oficial para reenviarlo por WhatsApp sin gastar megas de navegación.
+        </p>
+        <p class="text-xs text-gold-300">
+          Canal oficial unidireccional de simpatizantes (Nivel 5): en registro bajo custodia del Poder Constitucional (Nivel 2).
         </p>
       </div>
       <div class="flex flex-wrap gap-3 shrink-0">
+        <a
+          href={withBase('/militancia/')}
+          class="btn inline-flex items-center gap-2 rounded-lg bg-gold-400 text-navy-950 px-4 py-2.5 text-sm font-bold hover:bg-gold-300"
+        >
+          <Icon name="qr" class="w-4 h-4 shrink-0" />
+          <span>Conocer Militancia Nivel 4 y Verificador</span>
+        </a>
         <CompartirWhatsapp
           mensaje="Conoce el portal abierto del Partido Plus Ultra (Perú): transparencia en cuentas, 3 poderes, 5 niveles y Escuela Política obligatoria."
+          variante="oscura"
         />
         <a
           href={withBase('/documentos/estructura-basica-v2.pdf')}
-          class="btn inline-flex items-center gap-2 rounded-lg bg-navy-900 text-white px-4 py-2.5 text-sm font-bold hover:bg-navy-800"
+          class="btn inline-flex items-center gap-2 rounded-lg bg-navy-800 border border-gold-400 text-white px-4 py-2.5 text-sm font-bold hover:bg-navy-700"
         >
           <Icon name="download" class="w-4 h-4 text-gold-300 shrink-0" />
           <span>Descargar resumen PDF</span>
         </a>
       </div>
     </div>
+  </section>
+
+  <!-- Preguntas Frecuentes en Portada -->
+  <section class="max-w-7xl mx-auto px-4 pb-6">
+    <AccordionFaq
+      headingId="faq-inicio-heading"
+      titulo="Preguntas Frecuentes"
+      items={faqInicio}
+    />
   </section>
 </BaseLayout>

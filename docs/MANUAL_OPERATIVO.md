@@ -113,6 +113,9 @@ Valores permitidos para `categoria`: `"Estructura"`, `"Doctrina"`, `"Reglamento"
 
 - **Autoridades (`src/data/organigrama.json` -> `registroAutoridades`):** mantener actualizados `titular`, `estado` y `declaracionNoEmpresas` cuando existan actas de nombramiento vigentes. Respetar la regla estatutaria de 3 plazas en Nivel 1 e impar entre 5 y 13 en Nivel 2.
 - **Revocación anónima de carnets (`src/data/revocaciones.json`):** añadir únicamente el identificador público (ej. `"PU-N4-XXXX-YYYY"`) al arreglo `revocados` y actualizar `ultimaActualizacion` (`YYYY-MM-DD`), sin incluir nombres ni datos personales.
+- **Tablero ciudadano y canales oficiales (`src/data/avance-ciudadano.json`):**
+  - Mantener `ultimaActualizacion` (`YYYY-MM-DD`), `militantesDigitalesVerificados`, `firmasRopVerificadas` y `comitesProvincialesConstituidos` exclusivamente con cifras reales verificadas en actas o ante DNROP/JNE (nunca estimados ni metas infladas).
+  - En `canalesOficiales` (`whatsappCanalUrl`, `telegramCanalUrl`, `youtubeUrl`, `xUrl`, `tiktokUrl`), mantener `null` hasta que el canal exista bajo custodia institucional con URL `https://` válida; el pie de página solo publica enlaces no nulos.
 
 ---
 

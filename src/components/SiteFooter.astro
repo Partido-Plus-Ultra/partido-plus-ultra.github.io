@@ -1,6 +1,19 @@
 ---
 import EmblemaSvg from './EmblemaSvg.astro';
+import avanceCiudadano from '../data/avance-ciudadano.json';
 import { REPO_URL, withBase } from '../lib/url';
+
+const canalesDefinidos: Array<{ label: string; url: string | null }> = [
+  { label: 'WhatsApp', url: avanceCiudadano.canalesOficiales.whatsappCanalUrl },
+  { label: 'Telegram', url: avanceCiudadano.canalesOficiales.telegramCanalUrl },
+  { label: 'YouTube', url: avanceCiudadano.canalesOficiales.youtubeUrl },
+  { label: 'X', url: avanceCiudadano.canalesOficiales.xUrl },
+  { label: 'TikTok', url: avanceCiudadano.canalesOficiales.tiktokUrl },
+];
+
+const canalesActivos = canalesDefinidos.filter(
+  (c): c is { label: string; url: string } => typeof c.url === 'string' && c.url.length > 0
+);
 ---
 
 <footer class="bg-navy-950 text-slate-200 border-t-2 border-gold-400 mt-16">
@@ -20,12 +33,33 @@ import { REPO_URL, withBase } from '../lib/url';
       <p class="text-xs text-slate-400">
         Alojamiento estático abierto a costo S/ 0.00 en GitHub Pages.
       </p>
+      <div class="pt-1 text-xs text-slate-300">
+        {canalesActivos.length > 0 ? (
+          <div class="flex flex-wrap gap-3">
+            {canalesActivos.map((canal) => (
+              <a
+                href={canal.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-gold-300 underline underline-offset-4 hover:text-white font-semibold"
+              >
+                {canal.label}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="text-slate-400">
+            Canales oficiales (WhatsApp / Telegram / Redes): en registro bajo custodia del Poder Constitucional (Nivel 2).
+          </p>
+        )}
+      </div>
     </div>
 
     <div>
       <p class="text-sm font-bold uppercase tracking-wider text-gold-300">Secciones Públicas</p>
       <ul class="mt-3 space-y-2 text-sm">
         <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/estructura/')}>Estructura y Poderes</a></li>
+        <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/propuestas/')}>Plan de Gobierno y Propuestas</a></li>
         <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/transparencia/')}>Portal de Transparencia</a></li>
         <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/biblioteca/')}>Biblioteca Doctrinal</a></li>
         <li><a class="hover:text-gold-300 underline-offset-4 hover:underline" href={withBase('/militancia/')}>Militancia y Verificador</a></li>

@@ -21,6 +21,9 @@ const organigrama = JSON.parse(
 const tesoreria = JSON.parse(
   fs.readFileSync(path.join(rootDir, 'src', 'data', 'tesoreria.json'), 'utf8')
 );
+const avanceCiudadano = JSON.parse(
+  fs.readFileSync(path.join(rootDir, 'src', 'data', 'avance-ciudadano.json'), 'utf8')
+);
 
 const BAD_KID_TOKEN =
   'PU1.eyJpZCI6IlBVLU40LURFTU8tN0s5UCIsImtpZCI6ImRlbW8taW5leGlzdGVudGUtOTkiLCJuaXZlbCI6NCwiZW1pdGlkbyI6IjIwMjYtMTEtMjMiLCJ0aXBvIjoiREVNTyIsImVzY3VlbGFDZXJ0aWZpY2FkYSI6ZmFsc2V9.Q-t4PyE0ItHy_ZI_XSUo-L38PO0R-UItzuMWyOfC_XZGZ-58jgQHA4lT9L13sArRroJAyOkGtKaap8nZNIGrDg';
@@ -265,6 +268,7 @@ test('política de soberanía CI/CD, privacidad, cero CDNs externos y activos vi
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'components', 'EscuelaIlustracionSvg.astro')), true);
 
   assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'robots.txt.ts')), true);
+  assert.equal(fs.existsSync(path.join(rootDir, 'src', 'pages', 'propuestas.astro')), true);
   assert.equal(fs.existsSync(path.join(rootDir, 'public', 'robots.txt')), false);
   assert.equal(
     fs.existsSync(path.join(rootDir, 'docs', 'BORRADOR_REGLAMENTO_Y_CHECKLIST_FUNDACIONAL.md')),
@@ -283,4 +287,23 @@ test('política de soberanía CI/CD, privacidad, cero CDNs externos y activos vi
     }
   };
   walk(path.join(rootDir, 'src'));
+});
+
+test('avance ciudadano valida fecha ISO, contadores enteros reales y canales seguros', () => {
+  assert.equal(isValidIsoDate(avanceCiudadano.ultimaActualizacion), true);
+  assert.equal(Number.isInteger(avanceCiudadano.militantesDigitalesVerificados), true);
+  assert.ok(avanceCiudadano.militantesDigitalesVerificados >= 0);
+  assert.equal(Number.isInteger(avanceCiudadano.firmasRopVerificadas), true);
+  assert.ok(avanceCiudadano.firmasRopVerificadas >= 0);
+  assert.equal(Number.isInteger(avanceCiudadano.metaFirmasRopReferencial), true);
+  assert.ok(avanceCiudadano.metaFirmasRopReferencial >= 0);
+  assert.equal(Number.isInteger(avanceCiudadano.comitesProvincialesConstituidos), true);
+  assert.ok(avanceCiudadano.comitesProvincialesConstituidos >= 0);
+
+  for (const [canal, url] of Object.entries(avanceCiudadano.canalesOficiales)) {
+    assert.ok(
+      url === null || (typeof url === 'string' && /^https:\/\//.test(url)),
+      `Canal "${canal}" debe ser null o URL https:// válida`
+    );
+  }
 });

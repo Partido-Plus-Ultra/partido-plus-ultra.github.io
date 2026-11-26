@@ -65,6 +65,7 @@ Todos los módulos en `src/lib/` usan TypeScript estricto compartido tanto por e
   - `organigrama.json`: define poderes, niveles, reglas, distribución inicial de `15` fundadores + `50` simpatizantes y `registroAutoridades`.
   - `tesoreria.json`: libro contable anual inicializado en `saldoInicialCentimos: 0`, `movimientos: []`.
   - `revocaciones.json`: catálogo público anónimo de identificadores `PU-N*` revocados.
+  - `avance-ciudadano.json`: registro transparente de fase actual, conteos reales (`militantesDigitalesVerificados`, `firmasRopVerificadas`, `comitesProvincialesConstituidos`) y enlaces opcionales de `canalesOficiales` (validados como `null` o URL `https://`).
 
 ---
 

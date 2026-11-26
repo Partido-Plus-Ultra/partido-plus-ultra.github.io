@@ -30,12 +30,13 @@ Repositorio público oficial del **Partido Plus Ultra (PU)** en el Perú. Implem
 
 ---
 
-## Rutas Públicas Compiladas (12 páginas + `sitemap.xml`)
+## Rutas Públicas Compiladas (13 páginas + `sitemap.xml` + `robots.txt`)
 
 | Ruta | Contenido y función principal |
 | :--- | :--- |
-| `/` | Portada institucional, síntesis de valores, ejes y acceso a módulos públicos. |
+| `/` | Portada institucional, tablero ciudadano en vivo, 4 ejes de información general, Kit WhatsApp y FAQ. |
 | `/estructura/` | Pirámide interactiva de 5 niveles, 3 poderes, plan fundacional (15 + 50) y tabla de autoridades. |
+| `/propuestas/` | Pilares fundacionales vigentes, método orgánico de los tres poderes y ejes programáticos en debate. |
 | `/transparencia/` | Panel de tesorería en vivo (céntimos enteros, filtro sin tildes, exportación CSV segura) y actas. |
 | `/transparencia/actas/[slug]/` | Vista íntegra de cada acta oficial con enlace directo de auditoría al Markdown fuente en GitHub. |
 | `/biblioteca/` | Repositorio doctrinal buscable sin sensibilidad a tildes y filtrable por categoría. |
@@ -81,13 +82,13 @@ Repositorio público oficial del **Partido Plus Ultra (PU)** en el Perú. Implem
 │   ├── content/
 │   │   ├── actas/                     # Actas oficiales en Markdown
 │   │   └── documentos/                # Documentos doctrinales y especificaciones técnicas
-│   ├── data/                          # Ledgers JSON (organigrama, tesoreria, revocaciones)
+│   ├── data/                          # Ledgers JSON (organigrama, tesoreria, revocaciones, avance-ciudadano)
 │   ├── layouts/BaseLayout.astro       # Layout maestro, SEO, OpenGraph y preloads locales
 │   ├── lib/                           # Módulos TypeScript puros compartidos con Node test runner
-│   ├── pages/                         # Rutas estáticas y sitemap.xml.ts
+│   ├── pages/                         # Rutas estáticas, robots.txt.ts y sitemap.xml.ts
 │   ├── styles/global.css              # Design tokens, navbar, tablas, acordeón y prosa
 │   └── content.config.ts              # Esquemas Zod de colecciones
-├── tests/integrity.test.mjs           # Suite de 5 pruebas unitarias e integridad normativa
+├── tests/integrity.test.mjs           # Suite de 6 pruebas unitarias e integridad normativa
 ├── CHANGELOG.md                       # Historial técnico de versiones
 └── README.md                          # Este documento
 ```
@@ -100,7 +101,7 @@ Repositorio público oficial del **Partido Plus Ultra (PU)** en el Perú. Implem
 npm install      # Instala dependencias en un entorno Node moderno
 npm run dev      # Servidor de desarrollo Astro en localhost:4321
 npm run check    # Diagnóstico estático Astro + TypeScript + esquemas Zod
-npm test         # Ejecuta las 5 suites de node --test tests/integrity.test.mjs
+npm test         # Ejecuta las 6 suites de node --test tests/integrity.test.mjs
 npm run build    # Genera la compilación estática final en dist/
 npm run deploy   # Ejecuta check + test + build y publica dist/ en origin/gh-pages
 ```
